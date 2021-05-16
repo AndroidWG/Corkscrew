@@ -78,7 +78,7 @@
                     <property name="can-focus">False</property>
                     <property name="halign">center</property>
                     <property name="valign">start</property>
-                    <property name="label" translatable="yes">0Kb/s</property>
+                    <property name="label" translatable="yes">Status</property>
                     <property name="justify">center</property>
                   </object>
                   <packing>
