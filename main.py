@@ -1,9 +1,7 @@
-import asyncio
-import asyncio_glib
+import platform
+
 import gi
-
-asyncio.set_event_loop_policy(asyncio_glib.GLibEventLoopPolicy())
-
+import threading
 from github import releases
 
 gi.require_version("Gtk", "3.0")
@@ -13,18 +11,23 @@ builder = Gtk.Builder()
 builder.add_from_file("layouts/mainWindow.glade")
 
 
-def call_download(button):
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(download_openrct2())
+def get_download_folder():
+    if platform.system() == "Windows":
+        return "C:\\Users\\samu-\\Downloads\\OpenRCT2"
+    else:
+        return "/home/samuel/Downloads/OpenRCT2/"
 
 
-async def download_openrct2():
-    manager = releases.ReleaseManager("OpenRCT2", "OpenRCT2")
-    await manager.download_latest_asset("/home/samuel/Downloads/OpenRCT2/", builder.get_object("PgrDownload"))
+def download_openrct2(button):
+    manager = releases.ReleaseManager("OpenRCT2", "OpenRCT2", builder)
+    thread = threading.Thread(target=manager.download_latest_asset,
+                              args=(get_download_folder(), ))
+    thread.start()
+
 
 handlers = {
     "onDestroy": Gtk.main_quit,
-    "onDownloadClick": call_download
+    "onDownloadClick": download_openrct2
 }
 builder.connect_signals(handlers)
 

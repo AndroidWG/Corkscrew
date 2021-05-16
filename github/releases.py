@@ -1,24 +1,35 @@
 import os.path
-
 import requests
 import platform
-import asyncio
 
 
 class ReleaseManager:
-    def __init__(self, package_name, author_name):
+    def __init__(self, package_name, author_name, builder):
         self.package_name = package_name
         self.author_name = author_name
+        self.builder = builder
 
         self.selected_url = ""
         self.selected_filename = ""
+        self.download_view_container = builder.get_object("DownloadContainer")
+        self.download_label = builder.get_object("LblSpeed")
 
-    async def get_asset_download_url_and_name(self):
+    def get_asset_download_url_and_name(self):
+        self.download_view_container.set_no_show_all(False)
+        self.download_view_container.show_all()
+        self.download_label.set_text("Getting latest release...")
+
         url = f"https://api.github.com/repos/{self.author_name}/{self.package_name}/releases/latest"
-        response = requests.get(
-            url,
-            headers={"User-Agent": "OpenRCT2 Silent Launcher"}
-        )
+        try:
+            response = requests.get(
+                url,
+                headers={"User-Agent": "OpenRCT2 Silent Launcher"}
+            )
+        except Exception as e:
+            print("An error occurred while connecting to the download server. Please check your connection "
+                  "and try again.")
+            print(e)
+            self.download_view_container.hide_all()
 
         print(f"Got latest release from {self.package_name} with response code {response.status_code}")
 
@@ -82,29 +93,47 @@ class ReleaseManager:
 
         print(f"Selected {self.selected_filename} based on {current_platform} {platform.architecture()[0]}")
 
-    async def download_latest_asset(self, download_path, progress_bar):
-        if self.selected_url == "":
-            await self.get_asset_download_url_and_name()
+    def download_latest_asset(self, download_path):
+        self.download_label.set_text("Starting download...")
 
-        response = requests.get(
-            self.selected_url,
-            headers={"User-Agent": "OpenRCT2 Silent Launcher", "Accept": "application/octet-stream"},
-            stream=True
-        )
+        if self.selected_url == "":
+            self.get_asset_download_url_and_name()
+
+        try:
+            response = requests.get(
+                self.selected_url,
+                headers={"User-Agent": "OpenRCT2 Silent Launcher", "Accept": "application/octet-stream"},
+                stream=True
+            )
+        except Exception as e:
+            print("An error occurred while connecting to the download server. Please check your connection "
+                  "and try again.")
+            print(e)
+            self.download_view_container.hide_all()
+
         response_size = int(response.headers['content-length'])
 
         print(f"Started download request with response code {response.status_code}. Download size: {response_size} bytes")
 
-        if response.status_code == 200:
+        if response.status_code == 200 or response.status_code == 463:
             with open(os.path.join(download_path, self.selected_filename), "wb") as file:
                 bytes_read = 0
                 print("Downloading...")
 
-                for chunk in response.iter_content(512):
-                    file.write(chunk)
+                chunk_size = 512
+                try:
+                    for chunk in response.iter_content(chunk_size):
+                        file.write(chunk)
 
-                    bytes_read += 512
-                    progress = bytes_read / response_size
-                    # progress_bar.set_fraction(progress)
+                        bytes_read += chunk_size
+                        progress = bytes_read / response_size
+                        self.builder.get_object("PgrDownload").set_fraction(progress)
+                except requests.exceptions.ChunkedEncodingError:
+                    print("Connection was lost while downloading. Please try again.")
+                    self.download_view_container.hide_all()
+                except ConnectionError:
+                    print("An error occurred while connecting to the download server. Please check your connection "
+                          "and try again.")
+                    self.download_view_container.hide_all()
 
         print("Successfully finished downloading")
