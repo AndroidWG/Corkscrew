@@ -1,9 +1,9 @@
-import threading
-
-import gi
+import os
+import sys
 import tempfile
+import threading
+import gi
 import handler
-from github import releases
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
@@ -11,20 +11,29 @@ from gi.repository import Gtk
 builder = Gtk.Builder()
 builder.add_from_file("layouts/mainWindow.glade")
 
+if sys.argv.__contains__("-forceWindows"):
+    print("Force Windows platform enabled")
+elif sys.argv.__contains__("-forceLinux"):
+    print("Force Linux platform enabled")
+elif sys.argv.__contains__("-forceMacOS"):
+    print("Force macOS platform enabled")
+
+
+def set_working_folder():
+    temp_dir = tempfile.TemporaryDirectory()
+    print(f"Created temp dir at {temp_dir.name}")
+    # os.chdir(temp_dir.name)
+
+
+set_working_folder()
+
 
 def call_download_handler(button):
-    thread = threading.Thread(target=handler.download_rct2,
-                              args=(working_folder.name, builder))
+    download_handler = handler.DownloadInstallHandler(builder)
+
+    thread = threading.Thread(target=download_handler.download_and_install)
     thread.start()
 
-
-def get_working_folder():
-    temp_dir = tempfile.TemporaryDirectory()
-    print(f"Created temp dir at {temp_dir}")
-    return temp_dir
-
-
-working_folder = get_working_folder()
 
 handlers = {
     "onDestroy": Gtk.main_quit,
