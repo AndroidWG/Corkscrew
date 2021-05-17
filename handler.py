@@ -1,4 +1,3 @@
-import os
 import util
 from github import releases
 from install import windows, macos
@@ -42,8 +41,12 @@ class DownloadInstallHandler:
         elif current_platform == "Linux":
             return  # TODO: Alert linux users to use PPA/apt-get instead
         elif current_platform == "Darwin":
-            macos.copy_to_applications(self.installer_file)
+            return_data = macos.copy_to_applications(self.installer_file)
+            if return_data != 0:
+                self.download_label.set_text(return_data)
 
     def download_and_install(self):
         self.download_openrct2()
         self.install_openrct2()
+
+        self.download_label.set_text("Finished installing successfully")
