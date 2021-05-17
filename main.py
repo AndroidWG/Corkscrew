@@ -1,4 +1,6 @@
+import atexit
 import os
+import shutil
 import sys
 import tempfile
 import threading
@@ -17,15 +19,6 @@ elif sys.argv.__contains__("-forceLinux"):
     print("Force Linux platform enabled")
 elif sys.argv.__contains__("-forceMacOS"):
     print("Force macOS platform enabled")
-
-
-def set_working_folder():
-    temp_dir = tempfile.TemporaryDirectory()
-    print(f"Created temp dir at {temp_dir.name}")
-    # os.chdir(temp_dir.name)
-
-
-set_working_folder()
 
 
 def call_download_handler(button):

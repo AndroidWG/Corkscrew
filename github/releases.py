@@ -1,9 +1,9 @@
+import os.path
+
 import requests
 import platform
-
-from gi.repository import GLib
-
 import util
+from gi.repository import GLib
 
 
 def update_progress(progress_bar, fraction):
@@ -93,7 +93,7 @@ def get_asset_download_url_and_name():
     return selected_url, selected_filename
 
 
-def download_asset(url, filename, progress_bar):
+def download_asset(temp_dir, url, filename, progress_bar):
     try:
         response = requests.get(
             url,
@@ -111,7 +111,7 @@ def download_asset(url, filename, progress_bar):
     if response.status_code == 200 or response.status_code == 302:
         print(f"Started download request with size: {response_size} bytes")
 
-        with open(filename, "wb") as file:
+        with open(os.path.join(temp_dir, filename), "wb") as file:
             bytes_read = 0
             print("Downloading...")
 

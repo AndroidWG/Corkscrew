@@ -1,3 +1,6 @@
+import os
+import tempfile
+
 import util
 from github import releases
 from install import windows, macos
@@ -14,7 +17,7 @@ class DownloadInstallHandler:
         self.download_label = builder.get_object("LblSpeed")
         self.progress_bar = builder.get_object("PgrDownload")
 
-    def download_openrct2(self):
+    def download_openrct2(self, temp_dir):
         # UI Updates
         self.download_view_container.set_no_show_all(False)
         self.download_view_container.show_all()
@@ -26,27 +29,31 @@ class DownloadInstallHandler:
             return
 
         self.download_label.set_text("Downloading...")
-        return_data = releases.download_asset(self.installer_url, self.installer_file, self.progress_bar)
+        return_data = releases.download_asset(temp_dir, self.installer_url, self.installer_file, self.progress_bar)
 
         if return_data != 0:
             self.download_label.set_text(return_data)
 
-    def install_openrct2(self):
+    def install_openrct2(self, temp_dir):
         self.download_label.set_text("Installing...")
 
         current_platform = util.get_current_platform()
 
         if current_platform == "Windows":
-            windows.do_silent_install(self.installer_file)
+            windows.do_silent_install(temp_dir, self.installer_file)
         elif current_platform == "Linux":
             return  # TODO: Alert linux users to use PPA/apt-get instead
         elif current_platform == "Darwin":
-            return_data = macos.copy_to_applications(self.installer_file)
+            return_data = macos.copy_to_applications(temp_dir, self.installer_file)
             if return_data != 0:
                 self.download_label.set_text(return_data)
+                return
+
+        self.download_label.set_text("Finished installing")
 
     def download_and_install(self):
-        self.download_openrct2()
-        self.install_openrct2()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            print(f"Created temp dir at {temp_dir}")
 
-        self.download_label.set_text("Finished installing successfully")
+            self.download_openrct2(temp_dir)
+            self.install_openrct2(temp_dir)
