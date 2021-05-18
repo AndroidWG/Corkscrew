@@ -1,8 +1,4 @@
-import atexit
-import os
-import shutil
 import sys
-import tempfile
 import threading
 import gi
 import handler
