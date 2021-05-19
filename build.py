@@ -8,11 +8,16 @@ if current_platform == "Windows":
 else:
     add_data_string = "layouts/*:layouts"
 
+if current_platform == "Darwin":
+    icon_file = "resources/openrct2.icns"
+else:
+    icon_file = "resources/icon.ico"
+
 PyInstaller.__main__.run([
     "main.py",
     "--add-data=%s" % add_data_string,
-    "--icon=%s" % "resources/icon.ico",
-    "--name=%s" % "OpenRCT2SilentLauncher",
+    "--icon=%s" % icon_file,
+    "--name=%s" % "OpenRCT2 Silent Launcher",
     "--upx-dir=%s" % "upx/",
     "--noconsole",
     "--onefile"
