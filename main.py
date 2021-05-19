@@ -3,12 +3,13 @@ import threading
 import gi
 import check_install.windows
 import handler
+import util
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
 builder = Gtk.Builder()
-builder.add_from_file("layouts/mainWindow.glade")
+builder.add_from_file(util.resource_path("layouts/mainWindow.glade"))
 
 if sys.argv.__contains__("-forceWindows"):
     print("Force Windows platform enabled")
