@@ -53,7 +53,7 @@ class DownloadInstallHandler:
         self.download_label.set_text("Finished installing")
 
     def download_and_install(self):
-        if util.get_current_platform() == "Linux":
+        if util.get_current_platform() != "Linux":
             with tempfile.TemporaryDirectory() as temp_dir:
                 print(f"Created temp dir at {temp_dir}")
 
