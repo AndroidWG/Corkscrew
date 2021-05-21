@@ -1,30 +1,25 @@
 import os.path
 import zipfile
-import util
 import subprocess
 from shutil import copytree
 
 
 def copy_to_applications(temp_dir, installer_path):
-    if util.get_current_platform(True) == "Darwin":
-        print("Installing for macOS...")
+    print("Installing for macOS...")
 
-        zip_path = os.path.join(temp_dir, installer_path)
-        with zipfile.ZipFile(zip_path, "r") as downloaded_zip:
-            downloaded_zip.extractall(temp_dir)
-            print("Extracted OpenRCT2.app")
+    zip_path = os.path.join(temp_dir, installer_path)
+    with zipfile.ZipFile(zip_path, "r") as downloaded_zip:
+        downloaded_zip.extractall(temp_dir)
+        print("Extracted OpenRCT2.app")
 
-            # for some reason zipfile extracts the main executable inside the .app as a
-            # non-executable file, so we need to manually do that
-            make_unix_executable(temp_dir, "OpenRCT2.app/Contents/MacOS/OpenRCT2")
+        # for some reason zipfile extracts the main executable inside the .app as a
+        # non-executable file, so we need to manually do that
+        make_unix_executable(temp_dir, "OpenRCT2.app/Contents/MacOS/OpenRCT2")
 
-            copytree(os.path.join(temp_dir, "OpenRCT2.app"), "/Applications/OpenRCT2.app", symlinks=True)
+        copytree(os.path.join(temp_dir, "OpenRCT2.app"), "/Applications/OpenRCT2.app", symlinks=True)
 
-            print("Done installing")
-            return 0
-    else:
-        print("You are forcing a operating system different from the current, so no installation will take place.")
-        return "Installation not finished because you're not using macOS"
+        print("Finished installation successfully")
+        pub.sendMessage("statusChanged", new_text="Finished installing")
 
 
 def make_unix_executable(temp_dir, file):
