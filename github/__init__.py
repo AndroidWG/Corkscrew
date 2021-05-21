@@ -1,16 +1,13 @@
 import os.path
 import requests
 import platform
-import util
-from gi.repository import GLib
-
-
-def update_progress(progress_bar, fraction):
-    progress_bar.set_fraction(fraction)
+from pubsub import pub
 
 
 def get_latest_release():
     """ Returns the unmodified JSON response of the latest release of OpenRCT2"""
+    pub.sendMessage("statusChanged", new_text="Getting version info from GitHub...")
+
     url = f"https://api.github.com/repos/OpenRCT2/OpenRCT2/releases/latest"
     try:
         response = requests.get(
@@ -21,14 +18,21 @@ def get_latest_release():
         print("An error occurred while connecting to the download server. Please check your connection "
               "and try again.")
         print(e)
+
+        pub.sendMessage("statusChanged", new_text="Error while checking latest version. Check your "
+                                                           "connection and try again.")
         return None, None
 
-    print(f"Got latest release from OpenRCT2 with response code {response.status_code}")
+    print(f"Got latest release from GitHub")
 
-    if response.status_code == 200:
+    status_code = response.status_code
+    if status_code == 200:
         json_response = response.json()
         return json_response
     else:
+        print(f"The latest release request returned status code {status_code}")
+        pub.sendMessage("statusChanged", new_text=f"Bad status code {status_code} received while getting "
+                                                           f"release")
         return None, None
 
 
@@ -74,7 +78,7 @@ def get_asset_url_and_name(json_response):
             os_specific_binaries["macOS"][1] = file["name"]
             print(f"Found macOS file in URL {file['url']} with name {file['name']}")
 
-    current_platform = util.get_current_platform()
+    current_platform = platform.system()
     is_64_bit = platform.architecture()[0] == "64bit"
 
     if current_platform == "Windows":
@@ -102,7 +106,9 @@ def get_asset_url_and_name(json_response):
     return selected_url, selected_filename
 
 
-def download_asset(temp_dir, url, filename, progress_bar):
+def download_asset(temp_dir, url, filename):
+    pub.sendMessage("statusChanged", new_text="Downloading...")
+
     try:
         response = requests.get(
             url,
@@ -113,7 +119,10 @@ def download_asset(temp_dir, url, filename, progress_bar):
         print("An error occurred while connecting to the download server. Please check your connection "
               "and try again.")
         print(e)
-        return "Error while downloading. Check your connection and try again."
+
+        pub.sendMessage("statusChanged", new_text="Error while downloading. Check your connection and try "
+                                                           "again.")
+        return
 
     response_size = int(response.headers['content-length'])
 
@@ -131,17 +140,20 @@ def download_asset(temp_dir, url, filename, progress_bar):
 
                     bytes_read += chunk_size
                     progress = bytes_read / response_size
-                    GLib.idle_add(update_progress, progress_bar, progress)
+                    pub.sendMessage("progressChanged", fraction=progress)
             except requests.exceptions.ChunkedEncodingError:
                 print("Connection was lost while downloading. Please try again.")
-                return "Connection was lost while downloading. Please try again."
+                pub.sendMessage("statusChanged", new_text="Connection was lost while downloading. Please try "
+                                                                   "again.")
+                return
             except ConnectionError:
                 print("An error occurred while connecting to the download server. Please check your connection "
                       "and try again.")
-                return "Connection error. Please try again."
+                pub.sendMessage("statusChanged", new_text="Connection error. Please try again.")
+                return
     else:
         print(f"The download request returned status code {response.status_code}.")
-        return "Bad status code received."
+        pub.sendMessage("statusChanged", new_text="Bad status code received while downloading")
+        return
 
     print("Successfully finished downloading")
-    return 0
