@@ -1,24 +1,44 @@
 import tempfile
+
+import check_install
 import util
 import gi
 import webbrowser
-from github import releases
+import github
 from install import windows, macos
+from packaging import version
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GLib
 
 
 # This file is a bridge from UI to code. Main thread calls functions here in a different thread. This file
-# only handles (most) UI updates and chains functions together;
-class DownloadInstallHandler:
+# only handles (most) UI updates and chains functions together
+class GithubHandler:
     def __init__(self, builder):
         self.installer_url, self.installer_file = None, None
         self.builder = builder
 
+        self.latest_release = github.get_latest_release()
+
         self.download_view_container = builder.get_object("DownloadContainer")
         self.download_label = builder.get_object("LblSpeed")
         self.progress_bar = builder.get_object("PgrDownload")
+
+    def is_latest_installed(self):
+        try:
+            installed = version.parse(check_install.check_openrct2_install()[1])
+        except TypeError:
+            # If check_openrct2_install returns null, the "[1]" thing will throw this exception
+            # meaning an installation was not found
+            return False
+
+        latest = version.parse(github.get_latest_version(self.latest_release))
+
+        if latest >= installed:
+            return True
+        else:
+            return False
 
     def download_openrct2(self, temp_dir):
         # UI Updates
@@ -26,13 +46,13 @@ class DownloadInstallHandler:
         self.download_view_container.show_all()
         self.download_label.set_text("Getting latest release...")
 
-        self.installer_url, self.installer_file = releases.get_asset_download_url_and_name()
+        self.installer_url, self.installer_file = github.get_asset_url_and_name(self.latest_release)
         if self.installer_url is None and self.installer_file is None:
             self.download_label.set_text("Connection error. Please try again.")
             return
 
         self.download_label.set_text("Downloading...")
-        return_data = releases.download_asset(temp_dir, self.installer_url, self.installer_file, self.progress_bar)
+        return_data = github.download_asset(temp_dir, self.installer_url, self.installer_file, self.progress_bar)
 
         if return_data != 0:
             self.download_label.set_text(return_data)
@@ -52,7 +72,7 @@ class DownloadInstallHandler:
 
         self.download_label.set_text("Finished installing")
 
-    def download_and_install(self):
+    def update_openrct2(self):
         if util.get_current_platform() != "Linux":
             with tempfile.TemporaryDirectory() as temp_dir:
                 print(f"Created temp dir at {temp_dir}")

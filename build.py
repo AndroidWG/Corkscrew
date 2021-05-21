@@ -1,3 +1,4 @@
+import os
 import platform
 import PyInstaller.__main__
 
@@ -13,12 +14,17 @@ if current_platform == "Darwin":
 else:
     icon_file = "resources/icon.ico"
 
-PyInstaller.__main__.run([
+args = [
     "main.py",
     "--add-data=%s" % add_data_string,
     "--icon=%s" % icon_file,
     "--name=%s" % "OpenRCT2 Silent Launcher",
-    "--upx-dir=%s" % "upx/",
     "--noconsole",
     "--onefile"
-])
+]
+
+# if UPX folder is found inside root, make sure that PyInstaller uses it
+if os.path.exists("upx/"):
+    args.append("--upx-dir=%s" % "upx/")
+
+PyInstaller.__main__.run(args)

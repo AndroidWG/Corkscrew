@@ -35,9 +35,10 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="BtnDownload">
-                <property name="label" translatable="yes">Download OpenRCT2</property>
+              <object class="GtkButton" id="BtnMain">
+                <property name="label" translatable="yes">Checking...</property>
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <property name="halign">center</property>

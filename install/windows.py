@@ -4,11 +4,10 @@ import util
 
 
 def do_silent_install(temp_dir, installer_path):
-    print("Installing for Windows...")
-    command = f"\"{os.path.join(temp_dir, installer_path)}\" /S"
+    if util.get_current_platform(True):
+        print("Installing for Windows...")
+        command = f"\"{os.path.join(temp_dir, installer_path)}\" /S"
 
-    current_platform = util.get_current_platform(True)
-    if current_platform == "Windows":
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
         process.wait()
 

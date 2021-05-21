@@ -1,7 +1,6 @@
 import sys
 import threading
 import gi
-import check_install.windows
 import handler
 import util
 
@@ -18,13 +17,19 @@ elif sys.argv.__contains__("-forceLinux"):
 elif sys.argv.__contains__("-forceMacOS"):
     print("Force macOS platform enabled")
 
-check_install.windows.find_openrct2_install_folder()
+download_handler = handler.GithubHandler(builder)
+is_up_to_date = download_handler.is_latest_installed()
+main_button = builder.get_object("BtnMain")
+
+if not is_up_to_date:
+    main_button.set_label("Update OpenRCT2")
+    main_button.set_sensitive(True)
+else:
+    main_button.set_label("OpenRCT2 is up to date")
 
 
 def call_download_handler(button):
-    download_handler = handler.DownloadInstallHandler(builder)
-
-    thread = threading.Thread(target=download_handler.download_and_install)
+    thread = threading.Thread(target=download_handler.update_openrct2)
     thread.start()
 
 
