@@ -1,6 +1,7 @@
 import platform
 import shutil
 import tempfile
+import os
 import github
 from packaging import version
 from pubsub import pub
@@ -60,8 +61,10 @@ class InstallHandler:
             if self.current_platform == "Windows":
                 windows.do_silent_install(temp_dir, self.__installer_path)
             elif self.current_platform == "Darwin":
-                shutil.rmtree(self.mac_app_path)
-                print("Removed old installation")
+                if os.path.exists(self.mac_app_path):
+                    shutil.rmtree(self.mac_app_path)
+                    print("Removed old installation")
+                
                 macos.copy_to_applications(temp_dir, self.__installer_path)
 
             pub.sendMessage("updateSysTray", text="Finished installing")
