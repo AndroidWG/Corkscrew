@@ -3,10 +3,12 @@ import requests
 import platform
 from pubsub import pub
 
+import util
+
 
 def get_latest_release():
     """ Returns the unmodified JSON response of the latest release of OpenRCT2"""
-    pub.sendMessage("statusChanged", new_text="Getting version info from GitHub...")
+    pub.sendMessage("updateSysTray", text="Getting version info from GitHub...")
 
     url = f"https://api.github.com/repos/OpenRCT2/OpenRCT2/releases/latest"
     try:
@@ -19,8 +21,8 @@ def get_latest_release():
               "and try again.")
         print(e)
 
-        pub.sendMessage("statusChanged", new_text="Error while checking latest version. Check your "
-                                                           "connection and try again.")
+        pub.sendMessage("updateSysTray", text="Error while checking latest version. Check your "
+                                              "connection and try again.")
         return None, None
 
     print(f"Got latest release from GitHub")
@@ -31,8 +33,8 @@ def get_latest_release():
         return json_response
     else:
         print(f"The latest release request returned status code {status_code}")
-        pub.sendMessage("statusChanged", new_text=f"Bad status code {status_code} received while getting "
-                                                           f"release")
+        pub.sendMessage("updateSysTray", text=f"Bad status code {status_code} received while getting "
+                                              f"release")
         return None, None
 
 
@@ -57,26 +59,21 @@ def get_asset_url_and_name(json_response):
             if "win32" in file["name"]:
                 os_specific_binaries["Win_32"][0] = file["url"]
                 os_specific_binaries["Win_32"][1] = file["name"]
-                print(f"Found Win32 file in URL {file['url']} with name {file['name']}")
             elif "x64" in file["name"]:
                 os_specific_binaries["Win_64"][0] = file["url"]
                 os_specific_binaries["Win_64"][1] = file["name"]
-                print(f"Found Win64 file in URL {file['url']} with name {file['name']}")
 
         elif file["content_type"] == "application/gzip":
             if "linux-i686" in file["name"]:
                 os_specific_binaries["Linux_32"][0] = file["url"]
                 os_specific_binaries["Linux_32"][1] = file["name"]
-                print(f"Found Linux32 file in URL {file['url']} with name {file['name']}")
             elif "linux-x86_64" in file["name"]:
                 os_specific_binaries["Linux_64"][0] = file["url"]
                 os_specific_binaries["Linux_64"][1] = file["name"]
-                print(f"Found Linux64 file in URL {file['url']} with name {file['name']}")
 
         elif file["content_type"] == "application/zip" and "macos" in file["name"]:
             os_specific_binaries["macOS"][0] = file["url"]
             os_specific_binaries["macOS"][1] = file["name"]
-            print(f"Found macOS file in URL {file['url']} with name {file['name']}")
 
     current_platform = platform.system()
     is_64_bit = platform.architecture()[0] == "64bit"
@@ -107,7 +104,7 @@ def get_asset_url_and_name(json_response):
 
 
 def download_asset(temp_dir, url, filename):
-    pub.sendMessage("statusChanged", new_text="Downloading...")
+    pub.sendMessage("updateSysTray", text="Downloading...")
 
     try:
         response = requests.get(
@@ -119,9 +116,8 @@ def download_asset(temp_dir, url, filename):
         print("An error occurred while connecting to the download server. Please check your connection "
               "and try again.")
         print(e)
-
-        pub.sendMessage("statusChanged", new_text="Error while downloading. Check your connection and try "
-                                                           "again.")
+        pub.sendMessage("updateSysTray", text="Error while downloading. Check your connection and try "
+                                              "again.")
         return
 
     response_size = int(response.headers['content-length'])
@@ -131,7 +127,6 @@ def download_asset(temp_dir, url, filename):
 
         with open(os.path.join(temp_dir, filename), "wb") as file:
             bytes_read = 0
-            print("Downloading...")
 
             chunk_size = 512
             try:
@@ -139,21 +134,24 @@ def download_asset(temp_dir, url, filename):
                     file.write(chunk)
 
                     bytes_read += chunk_size
-                    progress = bytes_read / response_size
-                    pub.sendMessage("progressChanged", fraction=progress)
+                    percentage = (bytes_read / response_size)*100
+                    progress_string = "Downloading... {:.0f}%".format(percentage)
+
+                    util.print_progress(bytes_read, response_size, suffix="Downloaded", bar_length=65)
+                    pub.sendMessage("updateSysTray", text=progress_string)
             except requests.exceptions.ChunkedEncodingError:
                 print("Connection was lost while downloading. Please try again.")
-                pub.sendMessage("statusChanged", new_text="Connection was lost while downloading. Please try "
-                                                                   "again.")
+                pub.sendMessage("updateSysTray", text="Connection was lost while downloading. Please try "
+                                                      "again.")
                 return
             except ConnectionError:
                 print("An error occurred while connecting to the download server. Please check your connection "
                       "and try again.")
-                pub.sendMessage("statusChanged", new_text="Connection error. Please try again.")
+                pub.sendMessage("updateSysTray", text="Connection error. Please try again.")
                 return
     else:
         print(f"The download request returned status code {response.status_code}.")
-        pub.sendMessage("statusChanged", new_text="Bad status code received while downloading")
+        pub.sendMessage("updateSysTray", text="Bad status code received while downloading")
         return
 
-    print("Successfully finished downloading")
+    print("\nSuccessfully finished downloading")

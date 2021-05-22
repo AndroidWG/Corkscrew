@@ -19,7 +19,7 @@ def copy_to_applications(temp_dir, installer_path):
         copytree(os.path.join(temp_dir, "OpenRCT2.app"), "/Applications/OpenRCT2.app", symlinks=True)
 
         print("Finished installation successfully")
-        pub.sendMessage("statusChanged", new_text="Finished installing")
+        pub.sendMessage("updateSysTray", text="Finished installing")
 
 
 def make_unix_executable(temp_dir, file):

@@ -5,7 +5,7 @@ from install import windows, macos
 
 def install_or_update_openrct2(temp_dir, installer_file):
     current_platform = platform.system()
-    pub.sendMessage("statusChanged", new_text="Installing...")
+    pub.sendMessage("updateSysTray", text="Installing...")
 
     # TODO: remove current installation if it exists
 
@@ -17,7 +17,7 @@ def install_or_update_openrct2(temp_dir, installer_file):
 
 def check_openrct2_install():
     current_platform = platform.system()
-    pub.sendMessage("statusChanged", new_text="Checking OpenRCT2 Install...")
+    pub.sendMessage("updateSysTray", text="Checking OpenRCT2 Install...")
 
     if current_platform == "Windows":
         return windows.get_install_folder_and_version()

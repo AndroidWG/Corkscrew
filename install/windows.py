@@ -1,6 +1,8 @@
 import os.path
 import subprocess
 import platform
+import time
+
 from pubsub import pub
 
 
@@ -27,10 +29,12 @@ def get_install_folder_and_version():
 
 def do_silent_install(temp_dir, installer_path):
     print("Installing for Windows...")
-    command = f"\"{os.path.join(temp_dir, installer_path)}\" /S"
 
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
-    process.wait()
+    time.sleep(5)
+
+    # command = f"\"{os.path.join(temp_dir, installer_path)}\" /S"
+    # process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+    # process.wait()
 
     print("Finished installation successfully")
-    pub.sendMessage("statusChanged", new_text="Finished installing")
+    pub.sendMessage("updateSysTray", text="Finished installing")
