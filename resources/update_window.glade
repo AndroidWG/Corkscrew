@@ -6,6 +6,7 @@
     <property name="can-focus">False</property>
     <property name="resizable">False</property>
     <property name="window-position">center</property>
+    <property name="icon">..\design\Windows Icon@0,25x.png</property>
     <property name="urgency-hint">True</property>
     <child>
       <object class="GtkBox">
