@@ -16,13 +16,13 @@ class InstallHandler:
 
     def check_if_latest_is_installed(self):
         global install_info
-        from install import windows
+        from install import windows, macos
         pub.sendMessage("updateSysTray", text="Checking OpenRCT2 Install...")
 
         if self.current_platform == "Windows":
             install_info = windows.get_install_folder_and_version()
         elif self.current_platform == "Darwin":
-            install_info = None  # TODO: Add macOS check_install function
+            install_info = macos.get_install_folder_and_version()
 
         try:
             installed = version.parse(install_info[1])
