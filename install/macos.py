@@ -9,7 +9,7 @@ def get_install_folder_and_version():
     app_path = "/Applications/OpenRCT2.app"
 
     if os.path.exists(app_path):
-        with open(os.path.join(app_path, "/Contents/Info.plist"), "rb") as file:
+        with open(os.path.join(app_path, "Contents/Info.plist"), "rb") as file:
             plist = plistlib.load(file)
             return app_path, plist["CFBundleShortVersionString"]
     else:
