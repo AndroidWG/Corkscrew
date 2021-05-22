@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC -//Apple Computer//DTD PLIST 1.0//EN http://www.apple.com/DTDs/PropertyList-1.0.dtd >
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.androidwg.openrct2silentlauncher</string>
+    <key>Program</key>
+    <string>/Applications/OpenRCT2 Silent Launcher.app/Contents/MacOS/OpenRCT2 Silent Launcher</string>
+    <key>StartInterval</key>
+    <integer>43200</integer>
+    <key>KeepAlive</key>
+    <true/>
+  </dict>
+</plist>
