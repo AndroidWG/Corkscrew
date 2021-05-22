@@ -1,4 +1,5 @@
 import platform
+import shutil
 import tempfile
 import github
 from packaging import version
@@ -11,6 +12,8 @@ class InstallHandler:
     def __init__(self):
         self.__latest_release = github.get_latest_release()
         self.__installer_url, self.__installer_path = github.get_asset_url_and_name(self.__latest_release)
+        self.mac_app_path = "/Applications/OpenRCT2.app"
+        
         self.current_platform = platform.system()
         self.is_latest_installed = self.check_if_latest_is_installed()
 
@@ -22,7 +25,7 @@ class InstallHandler:
         if self.current_platform == "Windows":
             install_info = windows.get_install_folder_and_version()
         elif self.current_platform == "Darwin":
-            install_info = macos.get_install_folder_and_version()
+            install_info = macos.get_app_version(self.mac_app_path)
 
         try:
             installed = version.parse(install_info[1])
@@ -57,4 +60,8 @@ class InstallHandler:
             if self.current_platform == "Windows":
                 windows.do_silent_install(temp_dir, self.__installer_path)
             elif self.current_platform == "Darwin":
+                shutil.rmtree(self.mac_app_path)
+                print("Removed old installation")
                 macos.copy_to_applications(temp_dir, self.__installer_path)
+
+            pub.sendMessage("updateSysTray", text="Finished installing")

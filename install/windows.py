@@ -33,4 +33,3 @@ def do_silent_install(temp_dir, installer_path):
     process.wait()
 
     print("Finished installation successfully")
-    pub.sendMessage("updateSysTray", text="Finished installing")
