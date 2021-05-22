@@ -1,7 +1,3 @@
-import os
-import sys
-
-
 # CLI Progress Bar yoinked from https://gist.github.com/aubricus/f91fb55dc6ba5557fbab06119420dd6a#file-print_progress-py
 def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_length=100):
     """
@@ -14,6 +10,8 @@ def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_lengt
         decimals    - Optional  : positive number of decimals in percent complete (Int)
         bar_length  - Optional  : character length of bar (Int)
     """
+    # TODO: add auto width using os.get_terminal_size()
+
     str_format = "{0:." + str(decimals) + "f}"
     percents = str_format.format(100 * (iteration / float(total)))
     filled_length = int(round(bar_length * iteration / float(total)))

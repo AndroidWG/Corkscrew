@@ -15,11 +15,9 @@ def copy_to_applications(temp_dir, installer_path):
         # for some reason zipfile extracts the main executable inside the .app as a
         # non-executable file, so we need to manually do that
         make_unix_executable(temp_dir, "OpenRCT2.app/Contents/MacOS/OpenRCT2")
-
         copytree(os.path.join(temp_dir, "OpenRCT2.app"), "/Applications/OpenRCT2.app", symlinks=True)
 
         print("Finished installation successfully")
-        pub.sendMessage("updateSysTray", text="Finished installing")
 
 
 def make_unix_executable(temp_dir, file):

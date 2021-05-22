@@ -2,9 +2,7 @@ import os
 import platform
 import PyInstaller.__main__
 
-# Windows uses ; to separate source and destination strings, while Unix uses :
 current_platform = platform.system()
-
 if current_platform == "Darwin":
     icon_file = "design/icon.icns"
 else:

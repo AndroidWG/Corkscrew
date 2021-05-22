@@ -1,9 +1,8 @@
 import os.path
 import requests
 import platform
-from pubsub import pub
-
 import util
+from pubsub import pub
 
 
 def get_latest_release():
