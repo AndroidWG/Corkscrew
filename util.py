@@ -1,9 +1,13 @@
+import os
+import sys
+
+
 # CLI Progress Bar yoinked from https://gist.github.com/aubricus/f91fb55dc6ba5557fbab06119420dd6a#file-print_progress-py
 def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_length=100):
     """
     Call in a loop to create terminal progress bar
     @params:
-        iteration   
+        iteration   - Required  : current iteration (Int)
         total       - Required  : total iterations (Int)
         prefix      - Optional  : prefix string (Str)
         suffix      - Optional  : suffix string (Str)
@@ -21,3 +25,19 @@ def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_lengt
 
     if iteration == total:
         print('\n')
+
+
+# from https://stackoverflow.com/a/13790741/8286014
+def resource_path(relative_path):
+    """
+    Get absolute path to resource, works for dev and for PyInstaller
+    @params:
+        relative_path  - Required  : relative path to file (Str)
+    """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)

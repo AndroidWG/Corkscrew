@@ -1,7 +1,11 @@
 import sys
 import handler
 import platform
+import logging
 from pubsub import pub
+
+# Set up logging
+#logging.basicConfig(filename=)
 
 if platform.system() == "Windows":
     import tray_icon
