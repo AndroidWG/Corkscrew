@@ -1,2 +1,6 @@
 # OpenRCT2 Silent Launcher
-A simple updater launcher for OpenRCT2 that runs unobtrusively in the background for Windows, Linux and Mac made with Python and GTK+ 3. Work in progress.
+A background updater for OpenRCT2. Instead of only updating when you launch the game, it runs on the background (system tray for Windows and background agent on macOS) periodically checking if an update was found and quitting if there's no work to be done.
+
+### Platforms Supported
+- Windows
+- macOS (not fully integrated yet)

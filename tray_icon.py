@@ -1,5 +1,4 @@
 import sys
-
 from infi.systray import SysTrayIcon
 from pubsub import pub
 

@@ -4,19 +4,14 @@ import PyInstaller.__main__
 
 # Windows uses ; to separate source and destination strings, while Unix uses :
 current_platform = platform.system()
-if current_platform == "Windows":
-    add_data_string = "layouts/*;layouts"
-else:
-    add_data_string = "layouts/*:layouts"
 
 if current_platform == "Darwin":
-    icon_file = "resources/openrct2.icns"
+    icon_file = "design/icon.icns"
 else:
-    icon_file = "resources/icon.ico"
+    icon_file = "design/icon.ico"
 
 args = [
     "main.py",
-    "--add-data=%s" % add_data_string,
     "--icon=%s" % icon_file,
     "--name=%s" % "OpenRCT2 Silent Launcher",
     "--noconsole",
