@@ -11,8 +11,8 @@ class InstallHandler:
     def __init__(self):
         self.__latest_release = github.get_latest_release()
         self.__installer_url, self.__installer_path = github.get_asset_url_and_name(self.__latest_release)
-        self.is_latest_installed = self.check_if_latest_is_installed()
         self.current_platform = platform.system()
+        self.is_latest_installed = self.check_if_latest_is_installed()
 
     def check_if_latest_is_installed(self):
         global install_info
@@ -31,7 +31,7 @@ class InstallHandler:
             # meaning an installation was not found
             return False
 
-        latest = version.parse(self.__latest_release)
+        latest = version.parse(github.get_latest_version(self.__latest_release))
 
         if latest >= installed:
             return True

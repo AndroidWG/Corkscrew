@@ -137,7 +137,7 @@ def download_asset(temp_dir, url, filename):
                     percentage = (bytes_read / response_size)*100
                     progress_string = "Downloading... {:.0f}%".format(percentage)
 
-                    util.print_progress(bytes_read, response_size, suffix="Downloaded", bar_length=65)
+                    util.print_progress(bytes_read, response_size, suffix="Downloaded", bar_length=55)
                     pub.sendMessage("updateSysTray", text=progress_string)
             except requests.exceptions.ChunkedEncodingError:
                 print("Connection was lost while downloading. Please try again.")

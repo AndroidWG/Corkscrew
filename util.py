@@ -2,24 +2,12 @@ import os
 import sys
 
 
-# from https://stackoverflow.com/a/13790741/8286014
-def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
-
-
 # CLI Progress Bar yoinked from https://gist.github.com/aubricus/f91fb55dc6ba5557fbab06119420dd6a#file-print_progress-py
 def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_length=100):
     """
     Call in a loop to create terminal progress bar
     @params:
-        iteration   - Required  : current iteration (Int)
+        iteration   
         total       - Required  : total iterations (Int)
         prefix      - Optional  : prefix string (Str)
         suffix      - Optional  : suffix string (Str)
@@ -31,8 +19,7 @@ def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_lengt
     filled_length = int(round(bar_length * iteration / float(total)))
     bar = '█' * filled_length + '-' * (bar_length - filled_length)
 
-    sys.stdout.write('\r%s |%s| %s%s %s' % (prefix, bar, percents, '%', suffix)),
+    print('%s |%s| %s%s %s' % (prefix, bar, percents, '%', suffix), end="\r", flush=True)
 
     if iteration == total:
-        sys.stdout.write('\n')
-    sys.stdout.flush()
+        print('\n')
