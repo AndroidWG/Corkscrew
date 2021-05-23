@@ -19,7 +19,7 @@ class MillisecondFormatter(logging.Formatter):
         return s
 
 
-def setup_logging():
+def setup_logging(filename):
     current_platform = platform.system()
 
     # Define log location, local AppData for Windows and user's Logs folder on macOS.
@@ -29,7 +29,7 @@ def setup_logging():
     elif current_platform == "Darwin":
         logs_path = os.path.join(os.path.expanduser("~/Library/Logs"), "OpenRCT2 Silent Launcher")
 
-    log_path = os.path.join(logs_path, "launcher.log")
+    log_path = os.path.join(logs_path, filename)
 
     if not os.path.exists(logs_path):
         os.mkdir(logs_path)
@@ -37,7 +37,7 @@ def setup_logging():
     logging.basicConfig(
         filename=log_path,
         filemode="w",
-        level=logging.INFO)
+        level=logging.DEBUG)
 
     # Set custom Formatter to support DateFormats with milliseconds
     formatter = MillisecondFormatter(fmt="%(asctime)s | %(levelname)-7s | %(message)s",
@@ -49,3 +49,5 @@ def setup_logging():
     # Part of code from https://stackoverflow.com/a/16993115/8286014
     system_handler = logging.StreamHandler(stream=sys.stdout)
     logging.getLogger().addHandler(system_handler)
+
+    logging.info("Logging setup finished")

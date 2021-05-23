@@ -6,8 +6,8 @@ import log_setup
 from pubsub import pub
 
 current_platform = platform.system()
-log_setup.setup_logging()
-logging.info("Logging setup finished")
+log_setup.setup_logging("launcher.log")
+
 logging.info("Starting main.py")
 
 

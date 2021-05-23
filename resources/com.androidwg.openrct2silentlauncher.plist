@@ -7,8 +7,6 @@
     <key>Program</key>
     <string>/Applications/OpenRCT2 Silent Launcher.app/Contents/MacOS/OpenRCT2 Silent Launcher</string>
     <key>StartInterval</key>
-    <integer>43200</integer>
-    <key>KeepAlive</key>
-    <true/>
+    <integer>21600</integer>
   </dict>
 </plist>
