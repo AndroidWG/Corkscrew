@@ -20,9 +20,11 @@ args = [
 ]
 
 for file in files_to_bundle:
-    if current_platform == "Windows":
-        file.replace(";", ";")
-    arg = "--add-data=%s" % file
+    file_formatted = file
+    if current_platform != "Windows":
+        file_formatted = file.replace(";", ":")
+        
+    arg = "--add-data=%s" % file_formatted
     args.append(arg)
 
 # if UPX folder is found inside root, make sure that PyInstaller uses it

@@ -19,15 +19,17 @@ def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_lengt
     str_format = "{0:." + str(decimals) + "f}"
     percents = str_format.format(100 * (iteration / float(total)))
     filled_length = int(round(bar_length * iteration / float(total)))
-    bar = '█' * filled_length + '-' * (bar_length - filled_length)
+    bar = '#' * filled_length + '-' * (bar_length - filled_length)
 
-    print('%s |%s| %s%s %s' % (prefix, bar, percents, '%', suffix), end="\r", flush=True)
+    ready_to_print = ('%s |%s| %s%s %s' % (prefix, bar, percents, '%', suffix))
+
+    print(ready_to_print, end="\r", flush=True)
 
     if iteration == total:
         print('\n')
 
 
-# from https://stackoverflow.com/a/13790741/8286014
+# From https://stackoverflow.com/a/13790741/8286014
 def resource_path(relative_path):
     """
     Get absolute path to resource, works for dev and for PyInstaller
