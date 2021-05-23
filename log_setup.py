@@ -27,7 +27,7 @@ def setup_logging():
     if current_platform == "Windows":
         logs_path = os.path.join(os.getenv("localappdata"), "OpenRCT2 Silent Launcher")
     elif current_platform == "Darwin":
-        logs_path = os.path.join(os.path.expanduser("~/Library/Log"), "OpenRCT2 Silent Launcher")
+        logs_path = os.path.join(os.path.expanduser("~/Library/Logs"), "OpenRCT2 Silent Launcher")
 
     log_path = os.path.join(logs_path, "launcher.log")
 
