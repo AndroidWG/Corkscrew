@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<installer-script minSpecVersion="1.000000">
+    <title>#NAME#</title>
+    <background mime-type="image/png" file="banner.png" scaling="proportional"/>
+    <background-darkAqua mime-type="image/png" file="banner.png" scaling="proportional"/>
+    <license file="LICENSE.txt"/>
+    <options customize="never" allow-external-scripts="no"/>
+    <domains enable_localSystem="true" />
+    <installation-check script="installCheck();"/>
+    <script>
+function installCheck() {
+    if(!(system.compareVersions(system.version.ProductVersion, '10.10.0') >= 0)) {
+        my.result.title = 'Unable to install';
+        my.result.message = '#NAME# requires Mac OS X 10.10 or later.';
+        my.result.type = 'Fatal';
+        return false;
+    }
+    if(system.files.fileExistsAtPath('/Library/#NAME#/')) {
+        my.result.title = 'Previous Installation Detected';
+        my.result.message = 'A previous installation of #NAME# exists at /Library/#NAME#/. This installer will remove the previous installation prior to installing.';
+        my.result.type = 'Warning';
+        return false;
+    }
+    return true;
+}
+    </script>
+    <choices-outline>
+        <line choice="#NAME#"/>
+    </choices-outline>
+    <choice id="#NAME#" title="#NAME#">
+        <pkg-ref id="#NAME#.pkg"/>
+    </choice>
+    <pkg-ref id="#NAME#.pkg" auth="Root">#NAME#.pkg</pkg-ref>
+</installer-script>

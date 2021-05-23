@@ -6,6 +6,7 @@ import util
 from pubsub import pub
 
 
+# TODO: Document everything
 def get_latest_release():
     """ Returns the unmodified JSON response of the latest release of OpenRCT2"""
     pub.sendMessage("updateSysTray", text="Getting version info from GitHub...")

@@ -15,6 +15,7 @@ def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_lengt
         bar_length  - Optional  : character length of bar (Int)
     """
     # TODO: add auto width using os.get_terminal_size()
+    # TODO: change docstring to reStructured Text
 
     str_format = "{0:." + str(decimals) + "f}"
     percents = str_format.format(100 * (iteration / float(total)))

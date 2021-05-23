@@ -1,0 +1,13 @@
+#!/bin/bash
+
+INSTALL_PATH=#LOCATION#
+PACKAGE_NAME=#PACKAGE#
+
+echo "Post installation process started"
+
+#Load into launchctl
+echo "Load plist into launchctl"
+launchctl load "${INSTALL_PATH}"/com.androidwg.corkscrew.plist
+launchctl start "${PACKAGE_NAME}"
+
+echo "Post installation process finished"

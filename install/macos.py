@@ -8,7 +8,7 @@ from shutil import copytree
 
 def get_app_version(app_path):
     if os.path.exists(app_path):
-        with open(os.path.join(app_path, "Contents/Info.plist"), "rb") as file:
+        with open(os.path.join(app_path, "Contents/README.md.plist"), "rb") as file:
             plist = plistlib.load(file)
             # Returns app_path back to fit with Windows' "get_install_folder_and_version()"
             return app_path, plist["CFBundleShortVersionString"]

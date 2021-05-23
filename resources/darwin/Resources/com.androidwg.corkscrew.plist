@@ -3,9 +3,9 @@
 <plist version="1.0">
   <dict>
     <key>Label</key>
-    <string>com.androidwg.corkscrew</string>
+    <string>#PACKAGE#</string>
     <key>Program</key>
-    <string>/Applications/Corkscrew.app/Contents/MacOS/Corkscrew</string>
+    <string>#LOCATION#/Corkscrew</string>
     <key>StartInterval</key>
     <integer>21600</integer>
   </dict>

@@ -1,6 +1,8 @@
 import os
 import platform
 import shutil
+import tempfile
+
 import PyInstaller.__main__
 import sys
 
@@ -59,8 +61,30 @@ if current_platform == "Windows":
     shutil.move("dist/Corkscrew.exe", final_name + ".exe")
     print("Renamed file")
 elif current_platform == "Darwin":
-    shutil.make_archive(final_name + ".zip", "zip", "dist/Corkscrew.app")
+    import macos_installer
 
-    print("Packaged app to zip")
+    info = macos_installer.PackageInfo(
+        name="Corkscrew",
+        version=version,
+        package="com.androidwg.corkscrew",
+        install_location="~/Library/Corkscrew"
+    )
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        print("Started building macOS installer")
+        macos_installer.copy_darwin_directory(info, temp_dir)
+
+        files = [
+            "dist/Corkscrew",
+            os.path.join(temp_dir, "darwin/Resources/com.androidwg.corkscrew.plist"),
+            os.path.join(temp_dir, "darwin/Resources/uninstall.sh")
+        ]
+
+        distribution = os.path.join(temp_dir, "darwin/Distribution")
+        resources_path = os.path.join(temp_dir, "darwin/Resources")
+        packages_path = os.path.join(temp_dir, "package")
+
+        main_package = macos_installer.create_package(info, files, temp_dir)
+        macos_installer.create_product_installer(info, distribution, resources_path, packages_path, temp_dir)
 
 print(f"Finished build with version {version}")
