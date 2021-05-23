@@ -125,6 +125,7 @@ def download_asset(temp_dir, url, filename):
     if response.status_code == 200 or response.status_code == 302:
         logging.info(f"Started download request with size: {response_size} bytes")
 
+        pub.sendMessage("updateSysTray", text="Downloading... 0%")
         with open(os.path.join(temp_dir, filename), "wb") as file:
             bytes_read = 0
 
@@ -138,7 +139,9 @@ def download_asset(temp_dir, url, filename):
                     progress_string = "Downloading... {:.0f}%".format(percentage)
 
                     util.print_progress(bytes_read, response_size, suffix="Downloaded", bar_length=55)
-                    pub.sendMessage("updateSysTray", text=progress_string)
+
+                    if int(percentage) % 5 == 0:  # To avoid lagging out the tray icon, only update every 5% of progress
+                        pub.sendMessage("updateSysTray", text=progress_string)
             except requests.exceptions.ChunkedEncodingError:
                 logging.warn("Connection was lost while downloading. Please try again.")
                 pub.sendMessage("updateSysTray", text="Connection was lost while downloading. Please try "
@@ -154,4 +157,4 @@ def download_asset(temp_dir, url, filename):
         pub.sendMessage("updateSysTray", text="Bad status code received while downloading")
         return
 
-    logging.info("\nSuccessfully finished downloading")
+    logging.info("Successfully finished downloading")

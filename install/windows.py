@@ -30,9 +30,9 @@ def get_install_folder_and_version():
 def do_silent_install(temp_dir, installer_path):
     logging.info("Installing for Windows...")
 
-    command = f"\"{os.path.join(temp_dir, installer_path)}\""
+    command = f"\"{os.path.join(temp_dir, installer_path)}\" /S"
     logging.debug(f"Command sent to OS: {command}")
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+    process = subprocess.Popen(command, shell=True)
     process.wait()
 
     logging.info("Finished installation successfully")

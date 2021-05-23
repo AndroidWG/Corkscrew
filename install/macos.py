@@ -38,5 +38,5 @@ def copy_to_applications(temp_dir, installer_path):
 def make_unix_executable(temp_dir, file):
     file_path = os.path.join(temp_dir, file)
 
-    process = subprocess.Popen(["chmod", "+x", file_path], stdout=subprocess.PIPE)
+    process = subprocess.Popen(["chmod", "+x", file_path])
     process.wait()
