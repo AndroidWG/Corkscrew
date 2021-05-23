@@ -28,7 +28,7 @@ for file in files_to_bundle:
     args.append(arg)
 
 # if UPX folder is found inside root, make sure that PyInstaller uses it
-if os.path.exists("upx/"):
+if os.path.exists("../upx/"):
     args.append("--upx-dir=%s" % "upx/")
 
 PyInstaller.__main__.run(args)
