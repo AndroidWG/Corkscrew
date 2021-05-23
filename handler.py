@@ -13,6 +13,7 @@ from pubsub import pub
 class InstallHandler:
     def __init__(self):
         self.__latest_release = github.get_latest_release()
+        # TODO: Add None type return checking here
         self.__installer_url, self.__installer_path = github.get_asset_url_and_name(self.__latest_release)
         self.mac_app_path = "/Applications/OpenRCT2.app"
         
@@ -37,6 +38,7 @@ class InstallHandler:
             return False
 
         latest = version.parse(github.get_latest_version(self.__latest_release))
+        logging.info(f"Latest version is {latest.__str__()}")
 
         if latest >= installed:
             return True
@@ -56,15 +58,14 @@ class InstallHandler:
             # Install -----------------
             from install import windows, macos
             pub.sendMessage("updateSysTray", text="Installing...")
-
-            # TODO: remove current installation if it exists
+            logging.debug(f"Preparing to install file {self.__installer_path}")
 
             if self.current_platform == "Windows":
                 windows.do_silent_install(temp_dir, self.__installer_path)
             elif self.current_platform == "Darwin":
                 if os.path.exists(self.mac_app_path):
                     shutil.rmtree(self.mac_app_path)
-                    logging.info("Removed old installation")
+                    logging.debug("Removed old installation")
                 
                 macos.copy_to_applications(temp_dir, self.__installer_path)
 

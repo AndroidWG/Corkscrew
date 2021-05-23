@@ -40,7 +40,7 @@ def setup_logging(filename):
         level=logging.DEBUG)
 
     # Set custom Formatter to support DateFormats with milliseconds
-    formatter = MillisecondFormatter(fmt="%(asctime)s | %(levelname)-7s | %(message)s",
+    formatter = MillisecondFormatter(fmt="%(asctime)s | %(levelname)-8s | %(message)s",
                                      datefmt="%H:%M:%S.%f")
     log_handler = logging.getLogger().handlers[0]
     log_handler.setFormatter(formatter)

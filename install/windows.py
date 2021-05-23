@@ -22,13 +22,16 @@ def get_install_folder_and_version():
         install_location = winreg.QueryValueEx(access_key, "Install Folder")[0]
         version = winreg.QueryValueEx(access_key, "DisplayVersion")[0]
 
+        logging.debug(f"Found install info - install location: {install_location}\ninstall version:{version}")
+
         return install_location, version
 
 
 def do_silent_install(temp_dir, installer_path):
     logging.info("Installing for Windows...")
 
-    command = f"\"{os.path.join(temp_dir, installer_path)}\" /S"
+    command = f"\"{os.path.join(temp_dir, installer_path)}\""
+    logging.debug(f"Command sent to OS: {command}")
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
     process.wait()
 
