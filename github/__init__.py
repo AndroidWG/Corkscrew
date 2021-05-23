@@ -1,3 +1,4 @@
+import logging
 import os.path
 import requests
 import platform
@@ -16,22 +17,22 @@ def get_latest_release():
             headers={"User-Agent": "OpenRCT2 Silent Launcher"}
         )
     except Exception as e:
-        print("An error occurred while connecting to the download server. Please check your connection "
-              "and try again.")
-        print(e)
+        logging.error("An error occurred while connecting to the download server. Please check your connection "
+                      "and try again.\nException info: ")
+        logging.exception(e)
 
         pub.sendMessage("updateSysTray", text="Error while checking latest version. Check your "
                                               "connection and try again.")
         return None, None
 
-    print(f"Got latest release from GitHub")
+    logging.info(f"Got latest release from GitHub")
 
     status_code = response.status_code
     if status_code == 200:
         json_response = response.json()
         return json_response
     else:
-        print(f"The latest release request returned status code {status_code}")
+        logging.error(f"The latest release request returned status code {status_code}")
         pub.sendMessage("updateSysTray", text=f"Bad status code {status_code} received while getting "
                                               f"release")
         return None, None
@@ -98,7 +99,7 @@ def get_asset_url_and_name(json_response):
         selected_url = None
         selected_filename = None
 
-    print(f"Selected {selected_filename} based on {current_platform} {platform.architecture()[0]}")
+    logging.info(f"Selected {selected_filename} based on {current_platform} {platform.architecture()[0]}")
     return selected_url, selected_filename
 
 
@@ -112,9 +113,9 @@ def download_asset(temp_dir, url, filename):
             stream=True
         )
     except Exception as e:
-        print("An error occurred while connecting to the download server. Please check your connection "
-              "and try again.")
-        print(e)
+        logging.error("An error occurred while connecting to the download server. Please check your connection "
+                      "and try again.")
+        logging.exception(e)
         pub.sendMessage("updateSysTray", text="Error while downloading. Check your connection and try "
                                               "again.")
         return
@@ -122,7 +123,7 @@ def download_asset(temp_dir, url, filename):
     response_size = int(response.headers['content-length'])
 
     if response.status_code == 200 or response.status_code == 302:
-        print(f"Started download request with size: {response_size} bytes")
+        logging.info(f"Started download request with size: {response_size} bytes")
 
         with open(os.path.join(temp_dir, filename), "wb") as file:
             bytes_read = 0
@@ -133,24 +134,24 @@ def download_asset(temp_dir, url, filename):
                     file.write(chunk)
 
                     bytes_read += chunk_size
-                    percentage = (bytes_read / response_size)*100
+                    percentage = (bytes_read / response_size) * 100
                     progress_string = "Downloading... {:.0f}%".format(percentage)
 
                     util.print_progress(bytes_read, response_size, suffix="Downloaded", bar_length=55)
                     pub.sendMessage("updateSysTray", text=progress_string)
             except requests.exceptions.ChunkedEncodingError:
-                print("Connection was lost while downloading. Please try again.")
+                logging.warn("Connection was lost while downloading. Please try again.")
                 pub.sendMessage("updateSysTray", text="Connection was lost while downloading. Please try "
                                                       "again.")
                 return
             except ConnectionError:
-                print("An error occurred while connecting to the download server. Please check your connection "
-                      "and try again.")
+                logging.error("An error occurred while connecting to the download server. Please check your connection "
+                              "and try again.")
                 pub.sendMessage("updateSysTray", text="Connection error. Please try again.")
                 return
     else:
-        print(f"The download request returned status code {response.status_code}.")
+        logging.error(f"The download request returned status code {response.status_code}.")
         pub.sendMessage("updateSysTray", text="Bad status code received while downloading")
         return
 
-    print("\nSuccessfully finished downloading")
+    logging.info("\nSuccessfully finished downloading")

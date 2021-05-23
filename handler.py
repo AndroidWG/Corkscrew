@@ -3,6 +3,7 @@ import shutil
 import tempfile
 import os
 import github
+import logging
 from packaging import version
 from pubsub import pub
 
@@ -44,7 +45,7 @@ class InstallHandler:
 
     def update_openrct2(self):
         with tempfile.TemporaryDirectory() as temp_dir:
-            print(f"Created temp dir at {temp_dir}")
+            logging.info(f"Created temp dir at {temp_dir}")
 
             # Download ----------------
             if self.__installer_url is None or self.__installer_path is None:
@@ -63,7 +64,7 @@ class InstallHandler:
             elif self.current_platform == "Darwin":
                 if os.path.exists(self.mac_app_path):
                     shutil.rmtree(self.mac_app_path)
-                    print("Removed old installation")
+                    logging.info("Removed old installation")
                 
                 macos.copy_to_applications(temp_dir, self.__installer_path)
 
