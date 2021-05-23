@@ -9,7 +9,7 @@ log_setup.setup_logging("macos_setup.log")
 logging.info("Started first time setup")
 
 launch_agents_path = os.path.expanduser("~/Library/LaunchAgents")
-plist_name = "com.androidwg.openrct2silentlauncher.plist"
+plist_name = "com.androidwg.corkscrew.plist"
 plist_path = os.path.join(launch_agents_path, plist_name)
 
 resource_plist_path = util.resource_path(os.path.join("resources", plist_name))

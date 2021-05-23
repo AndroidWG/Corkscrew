@@ -3,9 +3,9 @@
 <plist version="1.0">
   <dict>
     <key>Label</key>
-    <string>com.androidwg.openrct2silentlauncher</string>
+    <string>com.androidwg.corkscrew</string>
     <key>Program</key>
-    <string>/Applications/OpenRCT2 Silent Launcher.app/Contents/MacOS/OpenRCT2 Silent Launcher</string>
+    <string>/Applications/Corkscrew.app/Contents/MacOS/Corkscrew</string>
     <key>StartInterval</key>
     <integer>21600</integer>
   </dict>

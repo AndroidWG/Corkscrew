@@ -25,9 +25,9 @@ def setup_logging(filename):
     # Define log location, local AppData for Windows and user's Logs folder on macOS.
     logs_path = ""
     if current_platform == "Windows":
-        logs_path = os.path.join(os.getenv("localappdata"), "OpenRCT2 Silent Launcher")
+        logs_path = os.path.join(os.getenv("localappdata"), "Corkscrew")
     elif current_platform == "Darwin":
-        logs_path = os.path.join(os.path.expanduser("~/Library/Logs"), "OpenRCT2 Silent Launcher")
+        logs_path = os.path.join(os.path.expanduser("~/Library/Logs"), "Corkscrew")
 
     log_path = os.path.join(logs_path, filename)
 

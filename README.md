@@ -1,8 +1,8 @@
-# OpenRCT2 Silent Launcher (aka Corkscrew)
+# Corkscrew
 A background updater for OpenRCT2. Instead of only updating when you launch the game, it periodically runs in the background and silently downloads and installs new versions of the game.
 
-## OPENRCT2 SILENT LAUNCHER IS, PARADOXICALLY, *NOT* A LAUNCHER!
-**Yes the name is wrong**, and the proper name that will be applied later is **Corkscrew**. What it does is run in the background (in the system tray on Windows and as an invisible Launch Agent in macOS) and checks for updates. If one is found, it quietly downloads and installs it, but **does not launch it.**
+## CORKSCREW IS *NOT* A LAUNCHER!
+Corkscrew runs in the background (in the system tray on Windows and as an invisible Launch Agent in macOS) and checks for updates. If one is found, it quietly downloads and installs it, but **does not launch it.**
 Also, if OpenRCT2 is **not installed**, it'll install the latest version automatically.
 
 ### Python Version

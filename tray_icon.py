@@ -28,7 +28,7 @@ def start_tray_icon():
 
     tray_icon = util.resource_path("resources/icon.ico")
 
-    systray = SysTrayIcon(tray_icon, "OpenRCT2 Silent Launcher", on_quit=on_quit_callback)
+    systray = SysTrayIcon(tray_icon, "Corkscrew", on_quit=on_quit_callback)
     systray.start()
 
     pub.subscribe(update_systray_hover_text_listener, "updateSysTray")

@@ -13,10 +13,10 @@ else:
 args = [
     "main.py",
     "--icon=%s" % icon_file,
-    "--name=%s" % "OpenRCT2 Silent Launcher",
+    "--name=%s" % "Corkscrew",
     "--noconsole",
     "--onefile",
-    "--osx-bundle-identifier=%s" % "com.androidwg.openrct2silentlauncher"
+    "--osx-bundle-identifier=%s" % "com.androidwg.corkscrew"
 ]
 
 for file in files_to_bundle:

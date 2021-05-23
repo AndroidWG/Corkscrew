@@ -14,7 +14,7 @@ def get_latest_release():
     try:
         response = requests.get(
             url,
-            headers={"User-Agent": "OpenRCT2 Silent Launcher"}
+            headers={"User-Agent": "Corkscrew"}
         )
     except Exception as e:
         logging.error("An error occurred while connecting to the download server. Please check your connection "
@@ -109,7 +109,7 @@ def download_asset(temp_dir, url, filename):
     try:
         response = requests.get(
             url,
-            headers={"User-Agent": "OpenRCT2 Silent Launcher", "Accept": "application/octet-stream"},
+            headers={"User-Agent": "Corkscrew", "Accept": "application/octet-stream"},
             stream=True
         )
     except Exception as e:
