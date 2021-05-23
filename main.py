@@ -10,6 +10,20 @@ log_setup.setup_logging()
 logging.info("Logging setup finished")
 logging.info("Starting main.py")
 
+
+# From https://stackoverflow.com/a/16993115/8286014
+def handle_exception(exc_type, exc_value, exc_traceback):
+    if issubclass(exc_type, KeyboardInterrupt):
+        sys.__excepthook__(exc_type, exc_value, exc_traceback)
+        return
+
+    logging.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+    pub.sendMessage("quitSysTray")
+    sys.exit()
+
+
+sys.excepthook = handle_exception
+
 if current_platform == "Windows":
     import tray_icon
 

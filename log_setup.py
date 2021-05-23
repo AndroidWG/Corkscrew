@@ -2,6 +2,7 @@ import logging
 import os
 import platform
 import datetime as dt
+import sys
 
 
 class MillisecondFormatter(logging.Formatter):
@@ -44,10 +45,7 @@ def setup_logging():
     log_handler = logging.getLogger().handlers[0]
     log_handler.setFormatter(formatter)
 
-    # Pipe logs to console so no need to use logging and print for the same messages
-    console = logging.StreamHandler()
-    console.setLevel(logging.INFO)
-
-    formatter = logging.Formatter("%(message)s")
-    console.setFormatter(formatter)
-    logging.getLogger().addHandler(console)
+    # Add stdout to log exceptions and also idk why but it makes logging calls print to console too
+    # Part of code from https://stackoverflow.com/a/16993115/8286014
+    system_handler = logging.StreamHandler(stream=sys.stdout)
+    logging.getLogger().addHandler(system_handler)

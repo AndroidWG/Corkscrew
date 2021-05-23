@@ -51,6 +51,7 @@ class InstallHandler:
             if self.__installer_url is None or self.__installer_path is None:
                 return
             else:
+                raise RuntimeError("test TEST TEEEEEST FUCK")
                 github.download_asset(temp_dir, self.__installer_url, self.__installer_path)
 
             # Install -----------------
