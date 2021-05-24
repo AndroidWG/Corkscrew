@@ -1,7 +1,9 @@
-# This script is based on code from https://github.com/KosalaHerath/macos-installer-builder converted to Python
+# This script is based on https://github.com/KosalaHerath/macos-installer-builder
+# MASSIVE thanks to Kosala Herath because this shit was painful
 import os
 import shutil
 import subprocess
+from util import replace_instances
 
 
 class PackageInfo:
@@ -47,13 +49,14 @@ class PackageInfo:
 def create_package(info: PackageInfo, files: list[str], temp_dir: str) -> str:
     """Creates a component package inside the package folder and returns its location as a string.
 
-    :rtype: str
     :param info: PackageInfo object
     :type info: PackageInfo
     :param files: Paths for all files that will be included in the package as a list
     :type files: list
     :param temp_dir: Temporary directory to be used
     :type temp_dir: str
+    :return: Path of created package
+    :rtype: str
     """
     package_path = os.path.join(temp_dir, f"package/{info.name}.pkg")
 
@@ -86,7 +89,6 @@ def create_package(info: PackageInfo, files: list[str], temp_dir: str) -> str:
 def create_product_installer(info: PackageInfo, distribution: str, resources: str, packages: str, temp_dir: str) -> str:
     """Creates product installer using productbuild.
 
-    :rtype: str
     :param info: PackageInfo object
     :type info: PackageInfo
     :param distribution: Distribution to use
@@ -97,6 +99,8 @@ def create_product_installer(info: PackageInfo, distribution: str, resources: st
     :type packages: str
     :param temp_dir: Temporary directory to be used
     :type temp_dir: str
+    :return: Path of created installer
+    :rtype: str
     """
     product_path = f"dist/{info.name.lower()}-macos-x64-{info.version}.pkg"
 
@@ -146,29 +150,8 @@ def copy_darwin_directory(info: PackageInfo, temp_dir: str):
     print("Creating folder for package output")
     os.mkdir(os.path.join(temp_dir, "package"))
 
+    # We need to set permissions to 755 for everything or else the installer refuses to install anything
+    # without showing any errors during build. This was very fun to debug 😃
     chmod = subprocess.Popen(["chmod", "-R", "755", temp_dir], stdout=subprocess.PIPE)
     chmod.wait()
     print("Setted permissions recursively")
-
-
-def replace_instances(file: str, tags: list[tuple[str, str]]):
-    """Takes a text file and replaces all instances of a tag with a string.
-
-    :param file: Path to file that will be modified
-    :type file: str
-    :param tags: List of tuples containing the tag and its replacement respectively
-    :type tags: list
-    """
-    with open(file, "rt") as file_in:
-        with open("temp_", "wt") as file_out:
-            for line in file_in:
-                replaced_line = line
-                for tag in tags:
-                    replaced_line = replaced_line.replace(tag[0], tag[1])
-
-                file_out.write(replaced_line)
-
-    print(f"Replaced tags in {file} to temp_ file")
-
-    shutil.move("temp_", file)
-    print("Renamed temp_ file")

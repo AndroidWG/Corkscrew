@@ -8,11 +8,14 @@ from pubsub import pub
 
 # TODO: Document everything
 def get_latest_release():
-    """ Returns the unmodified JSON response of the latest release of OpenRCT2"""
+    """ Returns the JSON object of the latest release of OpenRCT2
+
+    :return: JSON object from requests call
+    """
     pub.sendMessage("updateSysTray", text="Getting version info from GitHub...")
 
     url = f"https://api.github.com/repos/OpenRCT2/OpenRCT2/releases/latest"
-    try:
+    try:  # TODO: Add random simple user auth to prevent request limiting
         response = requests.get(
             url,
             headers={"User-Agent": "Corkscrew"}
@@ -39,13 +42,27 @@ def get_latest_release():
         return None, None
 
 
-def get_latest_version(json_response):
-    latest_version = str(json_response["tag_name"]).replace("v", "")  # removes the "v" prefix from version tags
+def get_latest_version(json) -> str:
+    """Gets the version string in a GitHub latest release request.
+
+    :param json: GitHub latest release JSON object from Requests
+    :type json: str
+    :return: Version as string without "v" prefix
+    :rtype: str
+    """
+    latest_version = str(json["tag_name"]).replace("v", "")  # removes the "v" prefix from version tags
     return latest_version
 
 
-def get_asset_url_and_name(json_response):
-    assets = json_response["assets"]
+def get_asset_url_and_name(json):
+    """Find the URL and filename of the correct binaries for the current OS.
+
+    :param json: GitHub latest release JSON object from Requests
+    :type json: str
+    :return: Tuple containing URL and filename respectively for the current OS
+    :rtype: tuple
+    """
+    assets = json["assets"]
 
     os_specific_binaries = {
         "Win_32": ["", ""],
@@ -104,7 +121,16 @@ def get_asset_url_and_name(json_response):
     return selected_url, selected_filename
 
 
-def download_asset(temp_dir, url, filename):
+def download_asset(temp_dir: str, url: str, filename: str):
+    """Downloads a file in 512 byte chunks from a GitHub octet-stream.
+
+    :param temp_dir: Temporary directory to be used
+    :type temp_dir: str
+    :param url: URL to the octect-stream API call
+    :type url: str
+    :param filename: Name of the downloaded file
+    :type filename: str
+    """
     pub.sendMessage("updateSysTray", text="Downloading...")
 
     try:
