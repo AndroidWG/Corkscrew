@@ -1,5 +1,4 @@
 # This script is based on https://github.com/KosalaHerath/macos-installer-builder
-# MASSIVE thanks to Kosala Herath because this shit was painful
 import os
 import shutil
 import subprocess
@@ -124,14 +123,14 @@ def create_product_installer(info: PackageInfo, distribution: str, resources: st
 
 
 def copy_darwin_directory(info: PackageInfo, temp_dir: str):
-    """Prepares build directory, copying from [repo_root]/resources/darwin to a temp folder.
+    """Prepares build directory, copying from [repo_root]/build/darwin to a temp folder.
 
         :param info: PackageInfo object
         :type info: PackageInfo
         :param temp_dir: Temporary directory to be used
         :type temp_dir: str
         """
-    shutil.copytree("resources/darwin", os.path.join(temp_dir, "darwin"))
+    shutil.copytree("build/darwin", os.path.join(temp_dir, "darwin"))
 
     tags = [
         ("#NAME#", info.name),
@@ -140,7 +139,7 @@ def copy_darwin_directory(info: PackageInfo, temp_dir: str):
         ("#LOCATION#", info.install_location)
     ]
 
-    # TODO: Add a list to PackageInfo with filenames/filepaths with tags to replace
+    # TODO: Add a list to PackageInfo with filenames/file paths with tags to replace
     print("Replacing tags") 
     replace_instances(os.path.join(temp_dir, "darwin/scripts/postinstall"), tags)
     replace_instances(os.path.join(temp_dir, "darwin/Resources/uninstall.sh"), tags)

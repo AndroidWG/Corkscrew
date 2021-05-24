@@ -2,7 +2,7 @@ import sys
 import handler
 import platform
 import logging
-import log_setup
+from util import log_setup
 from pubsub import pub
 
 __version = "0.0.2"
@@ -28,7 +28,7 @@ def main():
     sys.excepthook = handle_exception
 
     if current_platform == "Windows":
-        import tray_icon
+        from util import tray_icon
 
         tray_icon.start_tray_icon()
 

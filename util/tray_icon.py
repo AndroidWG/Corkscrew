@@ -1,3 +1,5 @@
+#  Copyright (c) 2021, androidWG/Samuel Rodrigues.
+
 import logging
 import sys
 from infi.systray import SysTrayIcon
@@ -26,7 +28,7 @@ def quit_tray_icon_listener():
 def start_tray_icon():
     global systray
 
-    tray_icon = util.resource_path("resources/icon.ico")
+    tray_icon = util.resource_path("../resources/icon.ico")
 
     systray = SysTrayIcon(tray_icon, "Corkscrew", on_quit=on_quit_callback)
     systray.start()
