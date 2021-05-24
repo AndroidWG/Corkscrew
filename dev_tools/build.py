@@ -1,15 +1,14 @@
+import getpass
 import os
 import platform
-import shutil
+import subprocess
 import tempfile
-
 import PyInstaller.__main__
 import sys
 
-import util
-
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import main
+import util
 
 # Define variables
 current_platform = platform.system()
@@ -17,20 +16,18 @@ files_to_bundle = ["resources/icon.ico;resources"]
 
 version = main.__version
 version_split = version.split(".")
-temp_ver_info_file = "file_ver_info.txt"
+temp_ver_info_file = "file_version_info.temp"
 
 # Prepare system specific resources
 if current_platform == "Darwin":
     icon_file = "resources/icon.icns"
 elif current_platform == "Windows":
     icon_file = "resources/icon.ico"
-
     tags = [
         ("#VERSION#", version),
-        ("VERSION_TUPLE", f"{version_split[0]}, {version_split[1]}, {version_split[2]}, 0")
+        ("#VERSION_TUPLE#", f"{version_split[0]}, {version_split[1]}, {version_split[2]}, 0")
     ]
-    util.replace_instances("resources/file_version_template.txt", tags, temp_ver_info_file)
-
+    util.replace_instances("resources/file_version.txt", tags, temp_ver_info_file)
 
 args = [
     "main.py",
@@ -61,9 +58,31 @@ PyInstaller.__main__.run(args)
 final_name = f"dist/corkscrew-v{version}"
 
 if current_platform == "Windows":
-    shutil.move("dist/Corkscrew.exe", final_name + ".exe")
-    os.remove("file_ver_info.txt")
-    print("Renamed file and removed file_ver_info")
+    print("\nStarted building Windows installer")
+    temp_setup_script = "inno_setup.temp"
+
+    tags = [
+        ("#VERSION#", version),
+        ("#REPO#", os.getcwd())
+    ]
+    util.replace_instances("resources/setup.iss", tags, out_file=temp_setup_script)
+
+    args = [
+        r"C:\Program Files (x86)\Inno Setup 6\ISCC.exe",
+        temp_setup_script
+    ]
+
+    print("Running command: ")
+    for arg in args:
+        print(arg, end=" ")
+
+    inno = subprocess.Popen(args, stdout=subprocess.PIPE)
+    inno.wait()
+    print(f"\nISCC finished with return code {inno.returncode}")
+
+    os.remove(temp_setup_script)
+    os.remove(temp_ver_info_file)
+    print("Removed temp files")
 elif current_platform == "Darwin":
     import macos_installer
 

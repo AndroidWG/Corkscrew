@@ -54,9 +54,11 @@ def resource_path(relative_path: str) -> str:
     return os.path.join(base_path, relative_path)
 
 
-def replace_instances(file: str, tags: list[tuple[str, str]], out_file: str = "temp_"):
+def replace_instances(file: str, tags: list[tuple[str, str]], out_file: str = "temp_", encoding: str = "utf-8"):
     """Takes a text file and replaces all instances of a tag with a string.
 
+    :param encoding: Encoding to open and save to file with.
+    :type encoding: str
     :param file: Path to file that will be modified
     :type file: str
     :param tags: List of tuples containing the tag and its replacement respectively
@@ -64,8 +66,8 @@ def replace_instances(file: str, tags: list[tuple[str, str]], out_file: str = "t
     :param out_file: (optional) File to write to. By default, a file named "temp_" will be created and then renamed to the original file
     :type out_file:
     """
-    with open(file, "rt") as file_in:
-        with open(out_file, "wt") as file_out:
+    with open(file, "rt", encoding=encoding) as file_in:
+        with open(out_file, "wt", encoding=encoding) as file_out:
             for line in file_in:
                 replaced_line = line
                 for tag in tags:
@@ -73,7 +75,7 @@ def replace_instances(file: str, tags: list[tuple[str, str]], out_file: str = "t
 
                 file_out.write(replaced_line)
 
-    print(f"Replaced tags in {file} to temp_ file")
+    print(f"Replaced tags in {file}")
 
     if out_file == "temp_":
         shutil.move("temp_", file)
