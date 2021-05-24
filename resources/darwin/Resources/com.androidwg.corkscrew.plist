@@ -4,8 +4,10 @@
   <dict>
     <key>Label</key>
     <string>#PACKAGE#</string>
-    <key>Program</key>
-    <string>#LOCATION#/Corkscrew</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>#LOCATION#/Corkscrew</string>
+    </array>
     <key>StartInterval</key>
     <integer>21600</integer>
   </dict>

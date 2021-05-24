@@ -57,19 +57,26 @@ def create_package(info: PackageInfo, files: list[str], temp_dir: str) -> str:
     """
     package_path = os.path.join(temp_dir, f"package/{info.name}.pkg")
 
+    bundles_dir = os.path.join(temp_dir, "bundles")
+    os.mkdir(bundles_dir)
+    for f in files:
+        shutil.copy(f, os.path.join(bundles_dir, os.path.basename(f)))
+
     pkgbuild_args = [
         "pkgbuild",
+        "--root", bundles_dir,
         "--identifier", info.package,
         "--version", info.version,
         "--scripts", os.path.join(temp_dir, "darwin/scripts"),
-        "--install-path", info.install_location,
+        "--install-location", info.install_location,
         package_path
     ]
-    for f in files:
-        pkgbuild_args.insert(1, "--component")
-        pkgbuild_args.insert(2, f)
 
-    print("Running pkgbuild")
+    print("Running command: ")
+    for arg in pkgbuild_args:
+        print(arg, end=" ")
+    print("\n")
+
     pkgbuild = subprocess.Popen(pkgbuild_args, stdout=subprocess.PIPE)
     pkgbuild.wait()
 
@@ -94,13 +101,18 @@ def create_product_installer(info: PackageInfo, distribution: str, resources: st
     product_path = f"dist/{info.name.lower()}-macos-x64-{info.version}.pkg"
 
     productbuild_args = [
+        "productbuild",
         "--distribution", distribution,
         "--resources", resources,
         "--package-path", packages,
         product_path
     ]
 
-    print("Running productbuild")
+    print("Running command: ")
+    for arg in productbuild_args:
+        print(arg, end=" ")
+    print("\n")
+
     productbuild = subprocess.Popen(productbuild_args, stdout=subprocess.PIPE)
     productbuild.wait()
 
@@ -115,7 +127,7 @@ def copy_darwin_directory(info: PackageInfo, temp_dir: str):
         :param temp_dir: Temporary directory to be used
         :type temp_dir: str
         """
-    shutil.copytree("resources/darwin", temp_dir)
+    shutil.copytree("resources/darwin", os.path.join(temp_dir, "darwin"))
 
     tags = [
         ("#NAME#", info.name),
@@ -124,14 +136,19 @@ def copy_darwin_directory(info: PackageInfo, temp_dir: str):
         ("#LOCATION#", info.install_location)
     ]
 
-    print("Replacing tags")
+    # TODO: Add a list to PackageInfo with filenames/filepaths with tags to replace
+    print("Replacing tags") 
     replace_instances(os.path.join(temp_dir, "darwin/scripts/postinstall"), tags)
     replace_instances(os.path.join(temp_dir, "darwin/Resources/uninstall.sh"), tags)
-    replace_instances(os.path.join(temp_dir, "darwin/Distribution"), tags)
+    replace_instances(os.path.join(temp_dir, "darwin/distribution.plist"), tags)
+    replace_instances(os.path.join(temp_dir, "darwin/Resources/com.androidwg.corkscrew.plist"), tags)
 
     print("Creating folder for package output")
     os.mkdir(os.path.join(temp_dir, "package"))
-    os.mkdir(os.path.join(temp_dir, "product"))
+
+    chmod = subprocess.Popen(["chmod", "-R", "755", temp_dir], stdout=subprocess.PIPE)
+    chmod.wait()
+    print("Setted permissions recursively")
 
 
 def replace_instances(file: str, tags: list[tuple[str, str]]):
@@ -154,5 +171,4 @@ def replace_instances(file: str, tags: list[tuple[str, str]]):
     print(f"Replaced tags in {file} to temp_ file")
 
     shutil.move("temp_", file)
-    os.remove("temp_")
-    print("Renamed and deleted temp_ file")
+    print("Renamed temp_ file")

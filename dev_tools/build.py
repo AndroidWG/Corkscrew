@@ -53,13 +53,12 @@ if os.path.exists("../upx/"):
 
 PyInstaller.__main__.run(args)
 
-os.remove("file_ver_info.txt")
-
 final_name = f"dist/corkscrew-v{version}"
 
 if current_platform == "Windows":
     shutil.move("dist/Corkscrew.exe", final_name + ".exe")
-    print("Renamed file")
+    os.remove("file_ver_info.txt")
+    print("Renamed file and removed file_ver_info")
 elif current_platform == "Darwin":
     import macos_installer
 
@@ -67,11 +66,11 @@ elif current_platform == "Darwin":
         name="Corkscrew",
         version=version,
         package="com.androidwg.corkscrew",
-        install_location="~/Library/Corkscrew"
+        install_location="/Library/Corkscrew"
     )
 
     with tempfile.TemporaryDirectory() as temp_dir:
-        print("Started building macOS installer")
+        print("\nStarted building macOS installer")
         macos_installer.copy_darwin_directory(info, temp_dir)
 
         files = [
@@ -80,7 +79,7 @@ elif current_platform == "Darwin":
             os.path.join(temp_dir, "darwin/Resources/uninstall.sh")
         ]
 
-        distribution = os.path.join(temp_dir, "darwin/Distribution")
+        distribution = os.path.join(temp_dir, "darwin/distribution.plist")
         resources_path = os.path.join(temp_dir, "darwin/Resources")
         packages_path = os.path.join(temp_dir, "package")
 
