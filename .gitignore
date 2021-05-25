@@ -103,6 +103,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 develop-eggs/
+pyinstaller_temp/
 dist/
 downloads/
 eggs/

@@ -2,6 +2,9 @@ import os
 import subprocess
 import tempfile
 import package_build
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import util
 
 

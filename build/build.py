@@ -45,7 +45,7 @@ args = [
     "--version-file=%s" % temp_ver_info_file,
     "--noconsole",
     "--onefile",
-    "--workpath=%s" % "pyinstaller_temp"
+    "--workpath=%s" % "pyinstaller_temp",
     "--osx-bundle-identifier=%s" % "com.androidwg.corkscrew"
 ]
 

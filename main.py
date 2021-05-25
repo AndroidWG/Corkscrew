@@ -5,7 +5,7 @@ import logging
 from util import log_setup
 from pubsub import pub
 
-__version = "0.0.2"
+__version = "0.1.0"
 
 
 # From https://stackoverflow.com/a/16993115/8286014
