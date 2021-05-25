@@ -48,7 +48,7 @@ class PackageInfo:
         return self.__install_location
 
 
-def create_package(info: PackageInfo, files: list[str], temp_dir: str) -> str:
+def create_package(info: PackageInfo, files: list, temp_dir: str) -> str:
     """Creates a component package inside the package folder and returns its location as a string.
 
     :param info: PackageInfo object

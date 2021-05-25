@@ -4,7 +4,7 @@ import subprocess
 import platform
 
 
-def get_install_folder_and_version() -> tuple[any, any]:
+def get_install_folder_and_version() -> tuple:
     """Gets the version and install path of OpenRCT2 from the Windows Registry.
 
     :return: Tuple with installation path an version string respectively. If an installation is not found, a tuple of None and None are returned.

@@ -54,7 +54,7 @@ def resource_path(relative_path: str) -> str:
     return os.path.join(base_path, relative_path)
 
 
-def replace_instances(file: str, tags: list[tuple[str, str]], out_file: str = "temp_", encoding: str = "utf-8"):
+def replace_instances(file: str, tags: list, out_file: str = "temp_", encoding: str = "utf-8"):
     """Takes a text file and replaces all instances of a tag with a string.
 
     :param encoding: Encoding to open and save to file with.

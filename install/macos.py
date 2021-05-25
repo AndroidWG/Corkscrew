@@ -6,7 +6,7 @@ import stat
 from shutil import copytree
 
 
-def get_app_version(app_path: str) -> tuple[any, any]:
+def get_app_version(app_path: str) -> tuple:
     """Gets the version and install path of OpenRCT2 with the provided .app path.
 
     :param app_path: Path to .app of OpenRCT2

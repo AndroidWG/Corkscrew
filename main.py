@@ -5,7 +5,7 @@ import logging
 from util import log_setup
 from pubsub import pub
 
-__version = "0.1.0"
+__version = "0.1.1"
 
 
 # From https://stackoverflow.com/a/16993115/8286014
@@ -16,16 +16,14 @@ def handle_exception(exc_type, exc_value, exc_traceback):
 
     logging.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
     pub.sendMessage("quitSysTray")
-    sys.exit()
 
 
 def main():
     current_platform = platform.system()
     log_setup.setup_logging("main.log")
 
-    logging.info("Starting main.py")
-
     sys.excepthook = handle_exception
+    logging.debug("Hooked exception handling")
 
     if current_platform == "Windows":
         from util import tray_icon
@@ -45,7 +43,6 @@ def main():
         download_handler.update_openrct2()
 
     pub.sendMessage("quitSysTray")
-    sys.exit()
 
 
 if __name__ == "__main__":

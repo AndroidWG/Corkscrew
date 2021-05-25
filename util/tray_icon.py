@@ -1,19 +1,13 @@
-#  Copyright (c) 2021, androidWG/Samuel Rodrigues.
-
 import logging
-import sys
+import os
 from infi.systray import SysTrayIcon
 from pubsub import pub
 
 import util
 
 
-def dummy_function(dummy_var):
-    pass
-
-
 def on_quit_callback(_systray):
-    logging.warning("Removed icon from system tray")
+    os._exit(1)
 
 
 def update_systray_hover_text_listener(text):
