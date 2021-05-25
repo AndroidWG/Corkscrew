@@ -8,7 +8,13 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import util
 
 
-def make_windows_installer(version):
+def make_windows_installer(version: str):
+    """Runs ISCC located at ``C:\\Program Files (x86)\\Inno Setup 6`` to build Windows installer, based on the the .iss
+    file located inside the build folder.
+
+    :param version: Version of the package formatted like 0.0.0
+    :type version: str
+    """
     print("\nStarted building Windows installer")
     temp_setup_script = "inno_setup.temp"
 
@@ -35,7 +41,13 @@ def make_windows_installer(version):
     print("Removed temp files")
 
 
-def make_macos_installer(version):
+def make_macos_installer(version: str):
+    """Uses `package_build` to make a package installer for macOS, using resource files from the `darwin` folder inside
+    the build folder.
+
+    :param version: Version of the package formatted like 0.0.0
+    :type version: str
+    """
     print("\nStarted building macOS installer")
 
     info = package_build.PackageInfo(
@@ -58,5 +70,5 @@ def make_macos_installer(version):
         resources_path = os.path.join(temp_dir, "darwin/Resources")
         packages_path = os.path.join(temp_dir, "package")
 
-        main_package = package_build.create_package(info, files, temp_dir)
+        package_build.create_package(info, files, temp_dir)
         package_build.create_product_installer(info, distribution, resources_path, packages_path, temp_dir)

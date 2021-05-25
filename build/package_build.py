@@ -19,7 +19,7 @@ class PackageInfo:
 
         :param name: Package name
         :type name: str
-        :param version: Version of the package formatted like #.#.#
+        :param version: Version of the package formatted like 0.0.0
         :type version: str
         :param package: Inverted domain name of package
         :type package: str

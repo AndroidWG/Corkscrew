@@ -6,7 +6,6 @@ import util
 from pubsub import pub
 
 
-# TODO: Document everything
 def get_latest_release():
     """ Returns the JSON object of the latest release of OpenRCT2
 
@@ -54,6 +53,7 @@ def get_latest_version(json) -> str:
     return latest_version
 
 
+# noinspection PyTypeChecker
 def get_asset_url_and_name(json):
     """Find the URL and filename of the correct binaries for the current OS.
 
