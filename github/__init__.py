@@ -2,6 +2,8 @@ import logging
 import os.path
 import random
 import string
+import sys
+
 import requests
 import platform
 import util
@@ -38,21 +40,20 @@ def get_latest_release():
                       "and try again.\nException info: ")
         logging.exception(e)
 
-        pub.sendMessage("updateSysTray", text="Error while checking latest version. Check your "
-                                              "connection and try again.")
-        return None, None
+        pub.sendMessage("updateSysTray", text="Error while checking latest version")
+        return None
 
     logging.info(f"Got latest release from GitHub")
 
     status_code = response.status_code
-    if status_code == 200:
+    if str(status_code).startswith("2") or str(status_code).startswith("3"):
         json_response = response.json()
         return json_response
     else:
         logging.error(f"The latest release request returned status code {status_code}")
         pub.sendMessage("updateSysTray", text=f"Bad status code {status_code} received while getting "
                                               f"release")
-        return None, None
+        return None
 
 
 def get_latest_version(json) -> str:
@@ -63,7 +64,7 @@ def get_latest_version(json) -> str:
     :return: Version as string without "v" prefix
     :rtype: str
     """
-    latest_version = str(json["tag_name"]).replace("v", "")  # removes the "v" prefix from version tags
+    latest_version = str(json["tag_name"]).replace("v", "")  # Removes the "v" prefix from version tags
     return latest_version
 
 
@@ -76,7 +77,11 @@ def get_asset_url_and_name(json):
     :return: Tuple containing URL and filename respectively for the current OS
     :rtype: tuple
     """
-    assets = json["assets"]
+    try:
+        assets = json["assets"]
+    except KeyError:
+        logging.error("\"assets\" key wasn't found in response. Exiting...")
+        os._exit()
 
     os_specific_binaries = {
         "Win_32": ["", ""],
@@ -165,8 +170,8 @@ def download_asset(temp_dir: str, url: str, filename: str):
 
     if response.status_code == 200 or response.status_code == 302:
         logging.info(f"Started download request with size: {response_size} bytes")
-
         pub.sendMessage("updateSysTray", text="Downloading... 0%")
+
         with open(os.path.join(temp_dir, filename), "wb") as file:
             bytes_read = 0
 
@@ -181,10 +186,10 @@ def download_asset(temp_dir: str, url: str, filename: str):
 
                     util.print_progress(bytes_read, response_size, suffix="Downloaded", bar_length=55)
 
-                    if int(percentage) % 5 == 0:  # To avoid lagging out the tray icon, only update every 5% of progress
+                    if int(percentage) % 10 == 0:  # To avoid lagging out the tray icon, only update every 10% of progress
                         pub.sendMessage("updateSysTray", text=progress_string)
             except requests.exceptions.ChunkedEncodingError:
-                logging.warn("Connection was lost while downloading. Please try again.")
+                logging.warning("Connection was lost while downloading. Please try again.")
                 pub.sendMessage("updateSysTray", text="Connection was lost while downloading. Please try "
                                                       "again.")
                 return

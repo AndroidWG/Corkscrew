@@ -13,8 +13,21 @@ from pubsub import pub
 class InstallHandler:
     def __init__(self):
         self.__latest_release = github.get_latest_release()
-        # TODO: Add None type return checking here
+        counter = 0
+        while counter < 5:
+
+            if self.__latest_release is not None:
+                break
+            else:
+                counter += 1
+                logging.warning("Failed to get latest release, trying again...")
+
+                if counter >= 5:
+                    logging.error("Getting latest release failed after 5 tries. Exiting...")
+                    os._exit(2)
+
         self.__installer_url, self.__installer_path = github.get_asset_url_and_name(self.__latest_release)
+
         self.mac_app_path = "/Applications/OpenRCT2.app"
         
         self.current_platform = platform.system()

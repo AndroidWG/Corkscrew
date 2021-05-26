@@ -4,8 +4,9 @@ import platform
 import logging
 from util import log_setup
 from pubsub import pub
+from util import tray_icon
 
-__version = "0.1.1"
+__version = "0.2.0"
 
 
 # From https://stackoverflow.com/a/16993115/8286014
@@ -26,8 +27,6 @@ def main():
     logging.debug("Hooked exception handling")
 
     if current_platform == "Windows":
-        from util import tray_icon
-
         tray_icon.start_tray_icon()
 
     download_handler = handler.InstallHandler()
