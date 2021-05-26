@@ -3,40 +3,35 @@ A background updater for OpenRCT2. Instead of only updating when you launch the 
 
 ## CORKSCREW IS *NOT* A LAUNCHER!
 Corkscrew runs in the background (in the system tray on Windows and as an invisible Launch Agent in macOS) and checks for updates. If one is found, it quietly downloads and installs it, but **does not launch it.**
-Also, if OpenRCT2 is **not installed**, it'll install the latest version automatically.
+Also, if OpenRCT2 is not installed, it'll install the latest version automatically.
 
 ### Platforms Supported
 - Windows
 - macOS
 
+#### Why no Linux?
+OpenRCT2 has packages for the most popular package managers out there, and since I assume most people will run `sudo apt-get upgrade` (or the equivalent for your distro) semi-frequently, I considered Windows and macOS as the primary platforms I should focus on.
+
 ### How to Install
-At the moment there is no installer for this app, however that is planned for later releases. What you have to do to get it running and working is:
+[Go to the Releases page](https://github.com/AndroidWG/Corkscrew/releases) and download the latest version for your OS and install it. The installer will create a Task on Windows and a LaunchAgent for macOS that will check for updates every 4 hours.
 
-#### Windows
-- Download .exe from Releases
-- Place it a safe location, that won't be deleted
-- Create a task using Task Scheduler to run every X amount of time
-- Run it by double-clicking the .exe (optional)
-    - A tray icon will appear, and disappear as soon as it's finished. If an update is not found for example, it'll show up and disappear after a few seconds.
-
-#### macOS
-- Download binaries from Releases
-- Copy/move the application to your Applications folder
-- Download `setup_agent.py` and `requirements.txt` files from `dev_tools` folder
-- Run `python3 -m pip install -r requirements.txt`
-- Run `python3 dev_tools/setup_agents.py`
-- The app will now be run immediately in the background and then automatically every 6 hours
-
-### Logs
-The app keeps the log of the last execution. It can be found here:
+### Logs & Settings
+The app keeps the log of the last execution, and the Windows installer outputs a log everytime it is run. Settings can also be found of these folders.
 
 | Windows                    | macOS                      |
 |----------------------------|----------------------------|
 | `%LOCALAPPDATA%\Corkscrew` | `~/Library/Logs/Corkscrew` |
 
-If you use macOS and you ran the `setup_agent.py` script you'll see a second log file named `macos_setup.log`. This is only needed if you had issues with that script.
+Please post your log *in full* on a website like [pastebin](https://pastebin.com/) when opening an Issue.
 
-Please post your log **in full** on a website like [pastebin](https://pastebin.com/) when opening an Issue.
+### Building from Source
+Python 3.6 or newer is needed. Run `python -m pip install -r requirements.txt` to install required packages and then run `python build/build.py` **from the root folder**. An executable file for your OS will be created on the `dist` folder in the repo's root directory.
 
-### Building
-Python 3.6 or newer is needed. Simply run `python -m pip install -r requirements.txt` and then `python dev_tools/build.py`. An executable file for your OS will be created on the `dist` folder inside the repo's root directory.
+You can add the flag `--no-installer` if you don't want the script to make an installer.
+
+> **NOTE:** On macOS, run `python3` instead of `python`
+ 
+#### Installer
+The Build script will generate an installer by default. In Windows, it'll use Inno Setup 6 installed at C:\Program Files (x86)\Inno Setup 6 (change that path in `build/installer.py` if you need it).
+
+Installers will be named ready to be added to a GitHub Release, and will use the version string specified in `main.py`.

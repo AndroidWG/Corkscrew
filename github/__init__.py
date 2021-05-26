@@ -1,9 +1,19 @@
 import logging
 import os.path
+import random
+import string
 import requests
 import platform
 import util
+from settings import local_settings
 from pubsub import pub
+from requests.auth import HTTPBasicAuth
+
+
+def set_random_username() -> str:
+    username = "corkscrew_" + "".join(random.choices(string.ascii_letters + string.digits, k=5))
+    local_settings.github_username = username
+    return username
 
 
 def get_latest_release():
@@ -13,11 +23,15 @@ def get_latest_release():
     """
     pub.sendMessage("updateSysTray", text="Getting version info from GitHub...")
 
+    if local_settings.github_username == "":
+        set_random_username()
+
     url = f"https://api.github.com/repos/OpenRCT2/OpenRCT2/releases/latest"
     try:  # TODO: Add random simple user auth to prevent request limiting
         response = requests.get(
             url,
-            headers={"User-Agent": "Corkscrew"}
+            headers={"User-Agent": "Corkscrew"},
+            auth=HTTPBasicAuth(local_settings.github_username, "")
         )
     except Exception as e:
         logging.error("An error occurred while connecting to the download server. Please check your connection "

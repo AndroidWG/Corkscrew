@@ -9,6 +9,6 @@
       <string>#LOCATION#/Corkscrew</string>
     </array>
     <key>StartInterval</key>
-    <integer>21600</integer>
+    <integer>14400</integer>
   </dict>
 </plist>

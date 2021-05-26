@@ -245,6 +245,8 @@ Thumbs.db
 /.vscode/
 /__pycache__/
 
+*.temp
+
 /OpenRCT2.app/
 /*.zip
 /upx/

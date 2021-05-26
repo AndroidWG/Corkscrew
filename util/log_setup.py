@@ -1,8 +1,8 @@
 import logging
 import os
-import platform
 import datetime as dt
 import sys
+from settings import local_settings
 
 
 class MillisecondFormatter(logging.Formatter):
@@ -20,19 +20,10 @@ class MillisecondFormatter(logging.Formatter):
 
 
 def setup_logging(filename):
-    current_platform = platform.system()
+    log_path = os.path.join(local_settings.app_data_path, filename)
 
-    # Define log location, local AppData for Windows and user's Logs folder on macOS.
-    logs_path = ""
-    if current_platform == "Windows":
-        logs_path = os.path.join(os.getenv("localappdata"), "Corkscrew")
-    elif current_platform == "Darwin":
-        logs_path = os.path.join(os.path.expanduser("~/Library/Logs"), "Corkscrew")
-
-    log_path = os.path.join(logs_path, filename)
-
-    if not os.path.exists(logs_path):
-        os.mkdir(logs_path)
+    if not os.path.exists(log_path):
+        os.mkdir(log_path)
 
     logging.basicConfig(
         filename=log_path,
