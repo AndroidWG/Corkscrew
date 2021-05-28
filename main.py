@@ -1,3 +1,8 @@
+"""Main entrypoint for Corkscrew. Coordinates with the Handler to do the whole checking, downloading and installing.
+
+Flags:
+    ``--forceInstall`` or ``-F``
+"""
 import sys
 import handler
 import platform
@@ -26,11 +31,16 @@ def main():
     sys.excepthook = handle_exception
     logging.debug("Hooked exception handling")
 
+    # TODO: Add check if program is already running
+
     if current_platform == "Windows":
         tray_icon.start_tray_icon()
 
     download_handler = handler.InstallHandler()
-    is_up_to_date = download_handler.is_latest_installed
+    if sys.argv.__contains__("--forceInstall") or sys.argv.__contains__("-F"):
+        is_up_to_date = False
+    else:
+        is_up_to_date = download_handler.is_latest_installed
 
     if current_platform == "Linux":
         logging.warning("Linux is currently unsupported. Exiting...")

@@ -27,7 +27,7 @@ def get_install_folder_and_version() -> tuple:
         install_location = winreg.QueryValueEx(access_key, "Install Folder")[0]
         version = winreg.QueryValueEx(access_key, "DisplayVersion")[0]
 
-        logging.debug(f"Found install info - install location: {install_location}\ninstall version:{version}")
+        logging.debug(f"Found install info - Location: {install_location}")
 
         return install_location, version
 
