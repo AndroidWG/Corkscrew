@@ -6,7 +6,6 @@ import github
 import logging
 import github.requests
 from packaging import version
-from requests import exceptions
 from install import windows, macos
 from pubsub import pub
 
@@ -16,25 +15,9 @@ from pubsub import pub
 # noinspection PyProtectedMember
 class InstallHandler:
     def __init__(self):
-        counter = 0
-        while counter < 5:
-            try:
-                self.__latest_release = github.get_latest_release()
-                break
-            except ConnectionError:
-                logging.warning("A connection error occurred while getting latest release")
-                # TODO: wait for connection
-            except exceptions.Timeout:
-                logging.warning("Timed out while requesting latest release")
-                # See to-do above
-            except exceptions.MissingSchema as e:
-                logging.error("Wrong URL was sent in latest release request. Exiting...", exc_info=e)
-                os._exit(2)
-
-            counter += 1
-            if counter >= 5:
-                logging.error("Getting latest release failed after 5 tries. Exiting...")
-                os._exit(2)
+        self.__latest_release = github.requests.try_to_get_request(github.get_latest_release, "latest release")
+        if self.__latest_release is None:
+            os._exit(2)
 
         try:
             self.__installer_url, self.__installer_path = github.get_asset_url_and_name(self.__latest_release)
@@ -86,7 +69,15 @@ class InstallHandler:
             logging.info(f"\nCreated temp dir at {temp_dir}")
 
             # Download ----------------
-            github.download_asset(temp_dir, self.__installer_url, self.__installer_path)
+            func = github.download_asset
+            result = github.requests.try_to_get_request(
+                func,
+                "latest release",
+                temp_dir,
+                self.__installer_url,
+                self.__installer_path)
+            if result is None:
+                os._exit(2)
 
             # Install -----------------
             pub.sendMessage("updateSysTray", text="Installing...")

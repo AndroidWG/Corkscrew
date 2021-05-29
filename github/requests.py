@@ -1,9 +1,11 @@
 import logging
+import time
 import requests
-from pubsub import pub
-from requests.auth import HTTPBasicAuth
+import github
 from github import set_random_username, exceptions
 from settings import local_settings
+from typing import Callable
+from requests.auth import HTTPBasicAuth
 
 
 def send_request(url: str, accept: str) -> requests.Response:
@@ -38,3 +40,74 @@ def send_request(url: str, accept: str) -> requests.Response:
         raise exceptions.ServerError(status_code)
     else:
         return response
+
+
+def wait_for_internet():
+    """Sends a request to google.com up to 300 times to check if there's internet connectivity. Returns True if it was
+    able to connect in under 300 tries and False if it reached that limit.
+
+    :return: Boolean indicating if caller should try again or give up
+    :rtype: bool
+    """
+    counter = 0
+    while True:
+        try:
+            requests.get("https://google.com")
+            logging.info("Connected to the internet again")
+            return True
+        except requests.exceptions.ConnectionError:
+            logging.info(f"Unable to connect to google.com (tried {counter} times)")
+            counter += 1
+
+            if counter > 300:
+                logging.error("Unable to connect after 300 tries. Exiting...")
+                return False
+
+            time.sleep(1.5)
+
+
+def try_to_get_request(request_func: Callable, message: str = "request", *args):
+    """Tries to run ``request_func`` and catches common exception errors from ``github`` methods that use
+    ``requests.get``. Returns None if the request ultimately fails.
+
+    :param args: Non-keyworded parameters to send to function
+    :param message: Name to be used when logging
+    :type message: str
+    :param request_func: The function that we will try. Should be from github.__init__
+    :type request_func: Callable
+    :return: request_func result or None if it fails
+    """
+    counter = 0
+    while True:
+        try:
+            if len(args) == 0:
+                return request_func()
+            else:
+                return request_func(*args)
+        except requests.exceptions.ConnectionError:
+            logging.warning(f"A connection error occurred while getting {message}")
+            if not wait_for_internet():
+                return None
+        except requests.exceptions.Timeout:
+            logging.warning(f"Timed out while requesting {message}")
+            if not wait_for_internet():
+                return None
+        except requests.exceptions.MissingSchema as e:
+            logging.error(f"Wrong URL was sent in {message} request. Exiting...", exc_info=e)
+            return None
+        except github.exceptions.ServerError as e:
+            logging.warning(f"Received a server error status code while getting {message}. Trying again...",
+                            exc_info=e)
+            counter += 1
+        except github.exceptions.ClientError as e:
+            logging.warning(f"Received a client error status code while getting {message}. Trying again...",
+                            exc_info=e)
+            counter += 1
+        except requests.exceptions.ChunkedEncodingError:
+            logging.warning(f"Connection error while downloading {message}")
+            wait_for_internet()
+            counter += 1
+
+        if counter >= 5:
+            logging.error("Getting latest release failed after 5 tries. Exiting...")
+            return None

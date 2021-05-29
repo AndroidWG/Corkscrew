@@ -1,7 +1,7 @@
 """Main entrypoint for Corkscrew. Coordinates with the Handler to do the whole checking, downloading and installing.
 
 Flags:
-    ``--forceInstall`` or ``-F``
+    ``--force-install`` or ``-F``
 """
 import sys
 import handler
@@ -37,7 +37,7 @@ def main():
         tray_icon.start_tray_icon()
 
     download_handler = handler.InstallHandler()
-    if sys.argv.__contains__("--forceInstall") or sys.argv.__contains__("-F"):
+    if sys.argv.__contains__("--force-install") or sys.argv.__contains__("-F"):
         is_up_to_date = False
     else:
         is_up_to_date = download_handler.is_latest_installed
