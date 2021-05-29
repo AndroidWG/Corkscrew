@@ -138,9 +138,7 @@ def download_asset(temp_dir: str, url: str, filename: str):
             file.write(chunk)  # TODO: Add error handling for IO exceptions
 
             bytes_read += chunk_size
-            percentage = (bytes_read / response_size) * 100
-
-            util.print_progress(bytes_read, response_size, suffix="Downloaded", bar_length=55)
+            util.print_progress(bytes_read, response_size, suffix="Downloaded")
 
     logging.info(f"Successfully finished downloading {filename}\n")
     return True

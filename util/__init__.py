@@ -4,8 +4,7 @@ import sys
 
 
 # From https://gist.github.com/aubricus/f91fb55dc6ba5557fbab06119420dd6a#file-print_progress-py
-def print_progress(iteration: int, total: int, prefix: str = '', suffix: str = '', decimals: int = 1,
-                   bar_length: int = 100):
+def print_progress(iteration: int, total: int, prefix: str = "", suffix: str = "done", decimals: int = 1):
     """Call in a loop to create a CLI progress bar.
 
     :param iteration: Current iteration
@@ -18,22 +17,25 @@ def print_progress(iteration: int, total: int, prefix: str = '', suffix: str = '
     :type suffix: str
     :param decimals: Number of decimals to be shown in percentage
     :type decimals: int
-    :param bar_length: How many long the progress bar is (doesn't include suffix, prefix and other chars)
-    :type bar_length: int
     """
-    # TODO: add auto width using os.get_terminal_size()
 
     str_format = "{0:." + str(decimals) + "f}"
     percents = str_format.format(100 * (iteration / float(total)))
-    filled_length = int(round(bar_length * iteration / float(total)))
-    bar = '#' * filled_length + '-' * (bar_length - filled_length)
 
-    ready_to_print = ('%s |%s| %s%s %s' % (prefix, bar, percents, '%', suffix))
+    cli_length = shutil.get_terminal_size().columns
+    available_length = cli_length - len("%s || 100.0%s %s" % (prefix, "%", suffix))
+
+    filled_length = int(round(available_length * iteration / float(total)))
+    bar = "#" * filled_length + '-' * (available_length - filled_length)
+
+    ready_to_print = ("%s |%s| %s%s %s" % (prefix, bar, percents, "%", suffix))
 
     print(ready_to_print, end="\r", flush=True)
 
-    if iteration == total:
-        print('\n')
+    if iteration >= total:
+        print(ready_to_print)
+    else:
+        sys.stdout.flush()
 
 
 # From https://stackoverflow.com/a/13790741/8286014

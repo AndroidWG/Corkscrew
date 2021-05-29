@@ -1,5 +1,4 @@
 import platform
-import shutil
 import tempfile
 import os
 import time
@@ -8,8 +7,6 @@ import github
 import logging
 import github.requests
 from packaging import version
-
-import trash
 from install import windows, macos
 
 
@@ -99,6 +96,7 @@ class InstallHandler:
                 windows.do_silent_install(temp_dir, self.__installer_path)
             elif self.current_platform == "Darwin":
                 if os.path.exists(self.mac_app_path):
+                    import trash
                     trash.send_to_trash(self.mac_app_path)
                     logging.debug("Removed old installation")
 
