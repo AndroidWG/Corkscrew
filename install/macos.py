@@ -48,5 +48,3 @@ def copy_to_applications(temp_dir: str, installer_path: str):
 
         copytree(os.path.join(temp_dir, "OpenRCT2.app"), "/Applications/OpenRCT2.app", symlinks=True)
         logging.debug("Copied to Applications")
-
-        logging.info("Finished installation successfully")

@@ -19,7 +19,6 @@ import main
 import util
 
 current_platform = platform.system()
-files_to_bundle = ["resources/icon.ico;resources"]
 
 version = main.__version
 version_split = version.split(".")
@@ -49,13 +48,14 @@ args = [
     "--osx-bundle-identifier=%s" % "com.androidwg.corkscrew"
 ]
 
-for file in files_to_bundle:
-    file_formatted = file
-    if current_platform != "Windows":
-        file_formatted = file.replace(";", ":")
-
-    arg = "--add-data=%s" % file_formatted
-    args.append(arg)
+# Leaving this here in case we need it in the future
+# for file in files_to_bundle:
+#     file_formatted = file
+#     if current_platform != "Windows":
+#         file_formatted = file.replace(";", ":")
+#
+#     arg = "--add-data=%s" % file_formatted
+#     args.append(arg)
 
 # If UPX folder is found inside root, make sure that PyInstaller uses it
 if os.path.exists("../upx/"):

@@ -8,8 +8,6 @@ import handler
 import platform
 import logging
 from util import log_setup
-from pubsub import pub
-from util import tray_icon
 
 __version = "0.2.0"
 
@@ -21,7 +19,6 @@ def handle_exception(exc_type, exc_value, exc_traceback):
         return
 
     logging.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
-    pub.sendMessage("quitSysTray")
 
 
 def main():
@@ -32,9 +29,6 @@ def main():
     logging.debug("Hooked exception handling")
 
     # TODO: Add check if program is already running
-
-    if current_platform == "Windows":
-        tray_icon.start_tray_icon()
 
     download_handler = handler.InstallHandler()
     if sys.argv.__contains__("--force-install") or sys.argv.__contains__("-F"):
@@ -51,7 +45,7 @@ def main():
     else:
         download_handler.update_openrct2()
 
-    pub.sendMessage("quitSysTray")
+    sys.exit()
 
 
 if __name__ == "__main__":

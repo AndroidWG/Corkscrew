@@ -7,7 +7,6 @@ import platform
 import util
 from github import exceptions, requests
 from settings import local_settings
-from pubsub import pub
 
 
 def set_random_username() -> str:
@@ -63,6 +62,7 @@ def get_asset_url_and_name(json):
         "macOS": ["", ""],
     }
 
+    # TODO: Add error handling if one of these keys isn't found, so the program keeps going
     # noinspection PyUnboundLocalVariable
     for file in assets:
         if file["content_type"] == "application/x-ms-dos-executable":
@@ -123,29 +123,24 @@ def download_asset(temp_dir: str, url: str, filename: str):
     :param filename: Name of the downloaded file
     :type filename: str
     """
-    pub.sendMessage("updateSysTray", text="Downloading...")
 
     logging.info("\nSending asset download request...")
     response = requests.send_request(url, "application/octet-stream")
     response_size = int(response.headers['content-length'])
 
     logging.debug(f"Started downloading {response_size} bytes...")
-    pub.sendMessage("updateSysTray", text="Downloading... 0%")
 
     with open(os.path.join(temp_dir, filename), "wb") as file:
         bytes_read = 0
 
         chunk_size = 512
         for chunk in response.iter_content(chunk_size):
-            file.write(chunk) # TODO: Add error handling for IO exceptions
+            file.write(chunk)  # TODO: Add error handling for IO exceptions
 
             bytes_read += chunk_size
             percentage = (bytes_read / response_size) * 100
-            progress_string = "Downloading... {:.0f}%".format(percentage)
 
             util.print_progress(bytes_read, response_size, suffix="Downloaded", bar_length=55)
 
-            if int(percentage) % 10 == 0:  # To avoid lagging out the tray icon, only update every 10% of progress
-                pub.sendMessage("updateSysTray", text=progress_string)
-
     logging.info(f"Successfully finished downloading {filename}\n")
+    return True

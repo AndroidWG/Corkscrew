@@ -7,7 +7,6 @@ import logging
 import github.requests
 from packaging import version
 from install import windows, macos
-from pubsub import pub
 
 
 # This file coordinates execution from the install and github packages. Should be
@@ -42,7 +41,6 @@ class InstallHandler:
     def check_if_latest_is_installed(self):
         global install_info
         from install import windows, macos
-        pub.sendMessage("updateSysTray", text="Checking OpenRCT2 Install...")
 
         if self.current_platform == "Windows":
             install_info = windows.get_install_folder_and_version()
@@ -80,7 +78,6 @@ class InstallHandler:
                 os._exit(2)
 
             # Install -----------------
-            pub.sendMessage("updateSysTray", text="Installing...")
             logging.debug(f"Preparing to install file {self.__installer_path}")
 
             if self.current_platform == "Windows":
@@ -93,4 +90,3 @@ class InstallHandler:
                 macos.copy_to_applications(temp_dir, self.__installer_path)
 
         logging.info("Finished installing OpenRCT2\n")
-        pub.sendMessage("updateSysTray", text="Finished installing")

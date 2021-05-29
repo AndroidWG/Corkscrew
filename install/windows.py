@@ -46,5 +46,3 @@ def do_silent_install(temp_dir: str, installer_path: str):
     logging.debug(f"Running command: {command}")
     process = subprocess.Popen(command, shell=True)
     process.wait()
-
-    logging.info("Finished installation successfully")
