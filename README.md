@@ -2,7 +2,7 @@
 A background updater for OpenRCT2. Instead of only updating when you launch the game, it periodically runs in the background and silently downloads and installs new versions of the game.
 
 ## CORKSCREW IS *NOT* A LAUNCHER!
-Corkscrew runs in the background (in the system tray on Windows and as an invisible Launch Agent in macOS) and checks for updates. If one is found, it quietly downloads and installs it, but **does not launch it.**
+Corkscrew runs in the background and checks for updates regularly. If one is found, it quietly downloads and installs it, but **does not launch it.**
 Also, if OpenRCT2 is not installed, it'll install the latest version automatically.
 
 ### Platforms Supported
@@ -16,7 +16,7 @@ OpenRCT2 has packages for the most popular package managers out there, and since
 [Go to the Releases page](https://github.com/AndroidWG/Corkscrew/releases) and download the latest version for your OS and install it. The installer will create a Task on Windows and a LaunchAgent for macOS that will check for updates every 4 hours.
 
 ### Logs & Settings
-The app keeps the log of the last execution, and the Windows installer outputs a log everytime it is run. Settings can also be found of these folders.
+The app keeps the log of the last execution. Settings can also be found of these folders.
 
 | Windows                    | macOS                      |
 |----------------------------|----------------------------|

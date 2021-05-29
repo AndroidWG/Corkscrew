@@ -50,4 +50,4 @@ Filename: "schtasks"; Parameters: "/Create /F /TN ""Corkscrew Updater"" /TR ""{a
 Filename: "schtasks"; Parameters: "/Delete /TN ""Corkscrew Updater"" /F"; Flags: runhidden
 
 [ThirdParty]
-CompileLogFile={localappdata}\Corkscrew\installer.log
+CompileLogFile={#LocalPath}\dist\{#Version}-installer.log

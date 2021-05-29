@@ -1,5 +1,5 @@
 requests>=2.25.1
 pyinstaller>=4.3
 packaging>=20.9
-infi.systray==0.1.12
 wheel==0.36.2
+psutil>=5.8.0

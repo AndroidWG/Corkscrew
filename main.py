@@ -9,7 +9,7 @@ import platform
 import logging
 from util import log_setup
 
-__version = "0.2.0"
+__version = "0.3.0"
 
 
 # From https://stackoverflow.com/a/16993115/8286014
@@ -27,8 +27,6 @@ def main():
 
     sys.excepthook = handle_exception
     logging.debug("Hooked exception handling")
-
-    # TODO: Add check if program is already running
 
     download_handler = handler.InstallHandler()
     if sys.argv.__contains__("--force-install") or sys.argv.__contains__("-F"):

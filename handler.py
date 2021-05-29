@@ -2,6 +2,8 @@ import platform
 import shutil
 import tempfile
 import os
+import time
+import psutil
 import github
 import logging
 import github.requests
@@ -79,6 +81,17 @@ class InstallHandler:
 
             # Install -----------------
             logging.debug(f"Preparing to install file {self.__installer_path}")
+
+            counter = 0
+            while "openrct2" in (p.name().lower().removesuffix(".exe") for p in psutil.process_iter()):
+                logging.info("OpenRCT2 is running. Trying again in 20 seconds...")
+                time.sleep(20)
+
+                counter += 1
+                if counter > 30:
+                    logging.warning("OpenRCT2 has been running for a long ass time, so we'll stop trying to update it "
+                                    "for now. Exiting...")
+                    os._exit(1)
 
             if self.current_platform == "Windows":
                 windows.do_silent_install(temp_dir, self.__installer_path)

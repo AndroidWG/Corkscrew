@@ -246,6 +246,7 @@ Thumbs.db
 /__pycache__/
 
 *.temp
+*-installer.log
 
 /OpenRCT2.app/
 /*.zip
