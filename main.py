@@ -1,7 +1,8 @@
 """Main entrypoint for Corkscrew. Coordinates with the Handler to do the whole checking, downloading and installing.
 
 Flags:
-    ``--force-install`` or ``-F``
+    ``--force-outdated`` or ``-F``
+    ``--skip-install`` or ``-SI``
 """
 import sys
 import handler
@@ -25,18 +26,15 @@ def main():
     current_platform = platform.system()
     log_setup.setup_logging("main.log")
 
+    if current_platform == "Linux":
+        logging.warning("Linux is currently unsupported. Exiting...")
+        sys.exit()
+
     sys.excepthook = handle_exception
     logging.debug("Hooked exception handling")
 
     download_handler = handler.InstallHandler()
-    if sys.argv.__contains__("--force-install") or sys.argv.__contains__("-F"):
-        is_up_to_date = False
-    else:
-        is_up_to_date = download_handler.is_latest_installed
-
-    if current_platform == "Linux":
-        logging.warning("Linux is currently unsupported. Exiting...")
-        sys.exit()
+    is_up_to_date = download_handler.is_latest_installed
 
     if is_up_to_date:
         logging.info("OpenRCT2 is already up to date")

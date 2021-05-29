@@ -1,4 +1,5 @@
 import platform
+import sys
 import tempfile
 import os
 import time
@@ -28,16 +29,19 @@ class InstallHandler:
         self.mac_app_path = "/Applications/OpenRCT2.app"
 
         self.current_platform = platform.system()
-        try:
-            self.is_latest_installed = self.check_if_latest_is_installed()
-        except OSError as e:
-            logging.error("Failed getting Windows Registry connection. "
-                          "Latest installed will be set to False", exc_info=e)
+        if sys.argv.__contains__("--force-outdated") or sys.argv.__contains__("-F"):
             self.is_latest_installed = False
-        except TypeError as e:
-            logging.error("Type error while parsing version. "
-                          "Latest installed will be set to False", exc_info=e)
-            self.is_latest_installed = False
+        else:
+            try:
+                self.is_latest_installed = self.check_if_latest_is_installed()
+            except OSError as e:
+                logging.error("Failed getting Windows Registry connection. "
+                              "Latest installed will be set to False", exc_info=e)
+                self.is_latest_installed = False
+            except TypeError as e:
+                logging.error("Type error while parsing version. "
+                              "Latest installed will be set to False", exc_info=e)
+                self.is_latest_installed = False
 
     def check_if_latest_is_installed(self):
         global install_info
@@ -92,6 +96,9 @@ class InstallHandler:
                                     "for now. Exiting...")
                     os._exit(1)
 
+            if sys.argv.__contains__("--skip-install") or sys.argv.__contains__("-SI"):
+                return 
+            
             if self.current_platform == "Windows":
                 windows.do_silent_install(temp_dir, self.__installer_path)
             elif self.current_platform == "Darwin":
