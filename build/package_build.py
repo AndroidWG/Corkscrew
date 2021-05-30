@@ -77,7 +77,7 @@ def create_package(info: PackageInfo, files: list, temp_dir: str) -> str:
         package_path
     ]
 
-    print("Running command: ")
+    print("Running command: ", end="")
     for arg in pkgbuild_args:
         print(arg, end=" ")
     print("\n")
@@ -114,7 +114,7 @@ def create_product_installer(info: PackageInfo, distribution: str, resources: st
         product_path
     ]
 
-    print("Running command: ")
+    print("Running command: ", end="")
     for arg in productbuild_args:
         print(arg, end=" ")
     print("\n")

@@ -36,9 +36,11 @@ def send_request(url: str, accept: str) -> requests.Response:
     status_code = response.status_code
     if str(status_code).startswith("4"):
         logging.error(f"Received a client error status code from GitHub releases")
+        logging.error(response.json())
         raise exceptions.ClientError(status_code)
     elif str(status_code).startswith("5"):
         logging.error(f"Received a server error status code from GitHub releases")
+        logging.error(response.json())
         raise exceptions.ServerError(status_code)
     else:
         return response

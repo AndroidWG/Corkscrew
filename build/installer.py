@@ -17,7 +17,7 @@ def make_windows_installer(version: str):
     :param version: Version of the package formatted like 0.0.0
     :type version: str
     """
-    print("Started building Windows installer")
+    print("\nStarted building Windows installer")
     temp_setup_script = "inno_setup.temp"
 
     tags = [
@@ -31,9 +31,10 @@ def make_windows_installer(version: str):
         temp_setup_script
     ]
 
-    print("Running command: ")
+    print("Running command: ", end="")
     for arg in args:
         print(arg, end=" ")
+    print("\n")
 
     inno = subprocess.Popen(args, stdout=subprocess.PIPE)
     inno.wait()
@@ -50,7 +51,7 @@ def make_macos_installer(version: str):
     :param version: Version of the package formatted like 0.0.0
     :type version: str
     """
-    print("Started building macOS installer")
+    print("\nStarted building macOS installer")
 
     info = package_build.PackageInfo(
         name="Corkscrew",
