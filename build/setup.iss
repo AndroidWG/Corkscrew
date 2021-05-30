@@ -34,8 +34,8 @@ VersionInfoVersion={#Version}
 VersionInfoDescription=A background updater for OpenRCT2
 VersionInfoProductName=Corkscrew
 VersionInfoProductVersion={#Version}
-DisableReadyPage=True
-DisableReadyMemo=True
+WizardImageFile=C:\Users\samu-\Repos\Corkscrew\resources\Windows.bmp
+WizardSmallImageFile=C:\Users\samu-\Repos\Corkscrew\resources\Windows-Small.bmp
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
