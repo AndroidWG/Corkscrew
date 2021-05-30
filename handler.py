@@ -70,45 +70,59 @@ class InstallHandler:
             return False
 
     def update_openrct2(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
-            logging.info(f"Created temp dir at {temp_dir}")
-
-            # Download ----------------
-            func = github.download_asset
-            result = github.requests.try_to_get_request(
-                func,
-                "latest release",
-                temp_dir,
-                self.__installer_url,
-                self.__installer_path)
-            if result is None:
-                return
-
-            # Install -----------------
-            logging.debug(f"Preparing to install file {self.__installer_path}")
-
-            if sys.argv.__contains__("--skip-install") or sys.argv.__contains__("-SI"):
-                return
-
+        for attempt in range(5):
             try:
-                util.is_open("openrct2", 20)
-            except KeyboardInterrupt:
-                logging.error("OpenRCT2 has been running for a long ass time, so we'll stop trying to update it "
-                              "for now. Exiting...")
-                return
+                with tempfile.TemporaryDirectory() as temp_dir:
+                    logging.info(f"Created temp dir at {temp_dir}")
 
-            try:
-                if self.current_platform == "Windows":
-                    windows.do_silent_install(temp_dir, self.__installer_path)
-                elif self.current_platform == "Darwin":
-                    if os.path.exists(self.__mac_app_path):
-                        import trash
-                        trash.send_to_trash(self.__mac_app_path)
-                        logging.debug("Removed old installation")
+                    # Download ----------------
+                    func = github.download_asset
+                    result = github.requests.try_to_get_request(
+                        func,
+                        "latest release",
+                        temp_dir,
+                        self.__installer_url,
+                        self.__installer_path)
+                    if result is None:
+                        return
 
-                    macos.copy_to_applications(temp_dir, self.__installer_path)
-            except KeyboardInterrupt as e:
-                logging.error(f"Install took too long to respond. Exiting...", exc_info=e)
+                    # Install -----------------
+                    logging.debug(f"Preparing to install file {self.__installer_path}")
+
+                    if sys.argv.__contains__("--skip-install") or sys.argv.__contains__("-SI"):
+                        return
+
+                    try:
+                        util.is_open("openrct2", 20)
+                    except KeyboardInterrupt:
+                        logging.error(
+                            "OpenRCT2 has been running for a long ass time, so we'll stop trying to update it "
+                            "for now. Exiting...")
+                        return
+
+                    try:
+                        if self.current_platform == "Windows":
+                            windows.do_silent_install(temp_dir, self.__installer_path)
+                        elif self.current_platform == "Darwin":
+                            if os.path.exists(self.__mac_app_path):
+                                import trash
+                                trash.send_to_trash(self.__mac_app_path)
+                                logging.debug("Removed old installation")
+
+                            macos.copy_to_applications(temp_dir, self.__installer_path)
+                    except KeyboardInterrupt as e:
+                        logging.error(f"Install took too long to respond. Exiting...", exc_info=e)
+                        return
+            except FileNotFoundError:
+                logging.warning(f"Temp folder not found on attempt #{attempt+1}. Retrying...")
+            except PermissionError as e:
+                logging.error(f"Got a permission error on attempt #{attempt+1}. Exiting...", exc_info=e)
                 return
+            else:
+                break  # Everything executed fine
+        else:
+            # The for loop did not encounter a break, so we ultimately failed
+            logging.error("Updating failed after 5 attempts. Exiting...")
+            return
 
         logging.info("Finished installing OpenRCT2")

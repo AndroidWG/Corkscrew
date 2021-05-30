@@ -132,7 +132,7 @@ def download_asset(temp_dir: str, url: str, filename: str):
 
         chunk_size = 512
         for chunk in response.iter_content(chunk_size):
-            file.write(chunk)  # TODO: Add error handling for IO exceptions
+            file.write(chunk)
 
             bytes_read += chunk_size
             util.print_progress(bytes_read, response_size, suffix="Downloaded")
