@@ -24,6 +24,9 @@ class InstallHandler:
         except KeyError as e:
             logging.error("Key not found while getting asset URLs and names. Exiting...", exc_info=e)
             sys.exit(2)
+        except ValueError as e:
+            logging.error("Unable to find filename or URL in latest release. Exiting...", exc_info=e)
+            sys.exit(2)
 
         self.__mac_app_path = "/Applications/OpenRCT2.app"
 

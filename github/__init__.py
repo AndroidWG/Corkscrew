@@ -41,7 +41,7 @@ def get_version(json) -> str:
     return version
 
 
-# noinspection PyTypeChecker
+# noinspection PyTypeChecker,PyUnboundLocalVariable
 def get_asset_url_and_name(json):
     """Find the URL and filename of the correct binaries for the current OS using a JSON object from a GitHub release
     request response.
@@ -55,15 +55,13 @@ def get_asset_url_and_name(json):
     assets = json["assets"]
 
     os_specific_binaries = {
-        "Win_32": ["", ""],
-        "Win_64": ["", ""],
-        "Linux_32": ["", ""],
-        "Linux_64": ["", ""],
-        "macOS": ["", ""],
+        "Win_32": [None, None],
+        "Win_64": [None, None],
+        "Linux_32": [None, None],
+        "Linux_64": [None, None],
+        "macOS": [None, None]
     }
 
-    # TODO: Add error handling if one of these keys isn't found, so the program keeps going
-    # noinspection PyUnboundLocalVariable
     for file in assets:
         if file["content_type"] == "application/x-ms-dos-executable":
             if "win32" in file["name"]:
@@ -105,11 +103,10 @@ def get_asset_url_and_name(json):
     elif current_platform == "Darwin":
         selected_url = os_specific_binaries["macOS"][0]
         selected_filename = os_specific_binaries["macOS"][1]
-    else:
-        selected_url = None
-        selected_filename = None
 
-    logging.info(f"Selected {selected_filename} based on {current_platform} {platform.architecture()[0]}\n")
+    logging.info(f"Selected {selected_filename} based on {current_platform} {platform.architecture()[0]}")
+    if selected_filename is None or selected_url is None:
+        raise ValueError("Selected file or URL returned None")
     return selected_url, selected_filename
 
 
