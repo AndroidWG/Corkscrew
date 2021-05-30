@@ -95,7 +95,7 @@ def create_product_installer(info: PackageInfo, distribution: str, resources: st
     :type info: PackageInfo
     :param distribution: Distribution to use
     :type distribution: str
-    :param resources: Path to Resources folder to be packed in installer
+    :param resources: Path to resources folder to be packed in installer
     :type resources: str
     :param packages: Path to packages folder that the installer will install
     :type packages: str
@@ -145,9 +145,9 @@ def copy_darwin_directory(info: PackageInfo, temp_dir: str):
     # TODO: Add a list to PackageInfo with filenames/file paths with tags to replace
     print("Replacing tags") 
     replace_instances(os.path.join(temp_dir, "darwin/scripts/postinstall"), tags)
-    replace_instances(os.path.join(temp_dir, "darwin/Resources/uninstall.sh"), tags)
+    replace_instances(os.path.join(temp_dir, "darwin/resources/uninstall.sh"), tags)
     replace_instances(os.path.join(temp_dir, "darwin/distribution.plist"), tags)
-    replace_instances(os.path.join(temp_dir, "darwin/Resources/com.androidwg.corkscrew.plist"), tags)
+    replace_instances(os.path.join(temp_dir, "darwin/resources/com.androidwg.corkscrew.plist"), tags)
 
     print("Creating folder for package output")
     os.mkdir(os.path.join(temp_dir, "package"))

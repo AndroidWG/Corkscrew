@@ -65,12 +65,12 @@ def make_macos_installer(version: str):
 
         files = [
             "dist/Corkscrew",
-            os.path.join(temp_dir, "darwin/Resources/com.androidwg.corkscrew.plist"),
-            os.path.join(temp_dir, "darwin/Resources/uninstall.sh")
+            os.path.join(temp_dir, "darwin/resources/com.androidwg.corkscrew.plist"),
+            os.path.join(temp_dir, "darwin/resources/uninstall.sh")
         ]
 
         distribution = os.path.join(temp_dir, "darwin/distribution.plist")
-        resources_path = os.path.join(temp_dir, "darwin/Resources")
+        resources_path = os.path.join(temp_dir, "darwin/resources")
         packages_path = os.path.join(temp_dir, "package")
 
         package_build.create_package(info, files, temp_dir)
