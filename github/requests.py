@@ -4,7 +4,7 @@ import requests
 import github
 import util.timeout
 from github import set_random_username, exceptions
-from settings import local_settings
+from util.settings import local_settings
 from typing import Callable
 from requests.auth import HTTPBasicAuth
 
@@ -28,7 +28,7 @@ def send_request(url: str, accept: str) -> requests.Response:
     response = requests.get(
         url,
         headers={"User-Agent": "Corkscrew", "Accept": accept},
-        auth=HTTPBasicAuth(local_settings.github_username, "")
+        auth=HTTPBasicAuth(util.local_settings.github_username, "")
     )
 
     logging.debug("Got response")

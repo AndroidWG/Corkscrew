@@ -6,7 +6,7 @@ import requests
 import platform
 import util
 from github import exceptions, requests
-from settings import local_settings
+from util.settings import local_settings
 
 
 def set_random_username() -> str:
