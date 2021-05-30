@@ -10,6 +10,7 @@ root containing a UPX release's files.
 For Windows installer building you'll need Inno Setup 6 installed."""
 import os
 import platform
+import shutil
 import PyInstaller.__main__
 import sys
 import installer
@@ -66,9 +67,13 @@ PyInstaller.__main__.run(args)
 
 # Clean temp file after use
 os.remove(temp_ver_info_file)
+try:
+    shutil.rmtree("pyinstaller_temp")
+except FileNotFoundError:
+    pass
 
 # Make platform installer
-if not sys.argv.__contains__("--no-installer") or not sys.argv.__contains__("-NI"):
+if not sys.argv.__contains__("--no-installer") and not sys.argv.__contains__("-NI"):
     if current_platform == "Windows":
         installer.make_windows_installer(version)
     elif current_platform == "Darwin":
