@@ -10,7 +10,7 @@ import platform
 import logging
 from util import log_setup
 
-__version = "0.3.0"
+__version = "0.3.1"
 
 
 # From https://stackoverflow.com/a/16993115/8286014

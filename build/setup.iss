@@ -34,8 +34,8 @@ VersionInfoVersion={#Version}
 VersionInfoDescription=A background updater for OpenRCT2
 VersionInfoProductName=Corkscrew
 VersionInfoProductVersion={#Version}
-WizardImageFile=C:\Users\samu-\Repos\Corkscrew\resources\Windows.bmp
-WizardSmallImageFile=C:\Users\samu-\Repos\Corkscrew\resources\Windows-Small.bmp
+WizardImageFile={#LocalPath}\build\resources\banner_0.59x.bmp , {#LocalPath}\build\resources\banner_0.5x.bmp , {#LocalPath}\build\resources\banner_0.75x.bmp , {#LocalPath}\build\resources\banner_0.83x.bmp , {#LocalPath}\build\resources\banner_1.25x.bmp , {#LocalPath}\build\resources\banner_1.5x.bmp , {#LocalPath}\build\resources\banner_1x.bmp
+WizardSmallImageFile={#LocalPath}\build\resources\banner_small_0.59x.bmp , {#LocalPath}\build\resources\banner_small_0.5x.bmp , {#LocalPath}\build\resources\banner_small_0.75x.bmp , {#LocalPath}\build\resources\banner_small_0.83x.bmp , {#LocalPath}\build\resources\banner_small_1.25x.bmp , {#LocalPath}\build\resources\banner_small_1.5x.bmp , {#LocalPath}\build\resources\banner_small_1x.bmp
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"

@@ -1,4 +1,5 @@
 import os
+import platform
 import subprocess
 import tempfile
 import package_build
@@ -6,6 +7,7 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import util
+from main import __version
 
 
 def make_windows_installer(version: str):
@@ -72,3 +74,12 @@ def make_macos_installer(version: str):
 
         package_build.create_package(info, files, temp_dir)
         package_build.create_product_installer(info, distribution, resources_path, packages_path, temp_dir)
+
+
+if __name__ == "__main__":
+    if platform.system() == "Windows":
+        make_windows_installer(__version)
+        sys.exit()
+    elif platform.system() == "Darwin":
+        make_macos_installer(__version)
+        sys.exit()
