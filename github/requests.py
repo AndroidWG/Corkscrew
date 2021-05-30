@@ -28,7 +28,7 @@ def send_request(url: str, accept: str) -> requests.Response:
     response = requests.get(
         url,
         headers={"User-Agent": "Corkscrew", "Accept": accept},
-        auth=HTTPBasicAuth(util.local_settings.github_username, "")
+        auth=HTTPBasicAuth(local_settings.github_username, "")
     )
 
     logging.debug("Got response")
