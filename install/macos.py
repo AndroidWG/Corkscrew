@@ -3,6 +3,7 @@ import os.path
 import zipfile
 import plistlib
 import stat
+import util.timeout
 from shutil import copytree
 
 
@@ -25,6 +26,7 @@ def get_app_version(app_path: str) -> tuple:
         return None, None
 
 
+@util.timeout.exit_after(180)
 def copy_to_applications(temp_dir: str, installer_path: str):
     """Copies the .app folder from the downloaded Zip to the /Applications folder.
 

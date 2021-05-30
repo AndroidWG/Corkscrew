@@ -2,6 +2,7 @@ import logging
 import os.path
 import subprocess
 import platform
+import util.timeout
 
 
 def get_install_folder_and_version() -> tuple:
@@ -32,6 +33,7 @@ def get_install_folder_and_version() -> tuple:
         return install_location, version
 
 
+@util.timeout.exit_after(180)
 def do_silent_install(temp_dir: str, installer_path: str):
     """Runs a NSIS-based installer in silent mode under a subprocess and waits for it to finish.
 

@@ -2,12 +2,14 @@ import logging
 import time
 import requests
 import github
+import util.timeout
 from github import set_random_username, exceptions
 from settings import local_settings
 from typing import Callable
 from requests.auth import HTTPBasicAuth
 
 
+@util.timeout.exit_after(180)
 def send_request(url: str, accept: str) -> requests.Response:
     """ Sends a request to the specified URL with the specified accept header. Uses "Corkscrew" User-Agent and
     authenticates with a random username stored in the app's settings. Raises a ClientError when a 4xx status
@@ -67,13 +69,14 @@ def wait_for_internet():
 
 
 def try_to_get_request(request_func: Callable, message: str = "request", *args):
-    """Tries to run ``request_func`` and catches common exception errors from ``github`` methods that use
+    """Tries to run ``request_func`` and catches common exception errors from methods that use
     ``requests.get``. Returns None if the request ultimately fails.
 
     :param args: Non-keyworded parameters to send to function
     :param message: Name to be used when logging
     :type message: str
-    :param request_func: The function that we will try. Should be from github.__init__
+    :param request_func: The function that we will try. Should be from github.__init__ and be
+    decorated with @util.timeout.exit_after(2)
     :type request_func: Callable
     :return: request_func result or None if it fails
     """
@@ -107,6 +110,9 @@ def try_to_get_request(request_func: Callable, message: str = "request", *args):
             logging.warning(f"Connection error while downloading {message}")
             wait_for_internet()
             counter += 1
+        except KeyboardInterrupt as e:
+            logging.error(f"Request took too long to respond. Exiting...", exc_info=e)
+            return None
 
         if counter >= 5:
             logging.error("Getting latest release failed after 5 tries. Exiting...")

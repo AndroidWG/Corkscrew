@@ -65,7 +65,8 @@ def replace_instances(file: str, tags: list, out_file: str = "temp_", encoding: 
     :type file: str
     :param tags: List of tuples containing the tag and its replacement respectively
     :type tags: list
-    :param out_file: (optional) File to write to. By default, a file named "temp_" will be created and then renamed to the original file
+    :param out_file: (optional) File to write to. By default, a file named "temp_" will be created and then renamed
+    to the original file
     :type out_file:
     """
     with open(file, "rt", encoding=encoding) as file_in:

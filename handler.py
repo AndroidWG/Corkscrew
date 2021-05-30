@@ -18,15 +18,15 @@ class InstallHandler:
     def __init__(self):
         self.__latest_release = github.requests.try_to_get_request(github.get_latest_release, "latest release")
         if self.__latest_release is None:
-            os._exit(2)
+            sys.exit(2)
 
         try:
             self.__installer_url, self.__installer_path = github.get_asset_url_and_name(self.__latest_release)
         except KeyError as e:
             logging.error("Key not found while getting asset URLs and names. Exiting...", exc_info=e)
-            os._exit(2)
+            sys.exit(2)
 
-        self.mac_app_path = "/Applications/OpenRCT2.app"
+        self.__mac_app_path = "/Applications/OpenRCT2.app"
 
         self.current_platform = platform.system()
         if sys.argv.__contains__("--force-outdated") or sys.argv.__contains__("-F"):
@@ -50,7 +50,7 @@ class InstallHandler:
         if self.current_platform == "Windows":
             install_info = windows.get_install_folder_and_version()
         elif self.current_platform == "Darwin":
-            install_info = macos.get_app_version(self.mac_app_path)
+            install_info = macos.get_app_version(self.__mac_app_path)
 
         try:
             installed = version.parse(install_info[1])
@@ -80,7 +80,7 @@ class InstallHandler:
                 self.__installer_url,
                 self.__installer_path)
             if result is None:
-                os._exit(2)
+                return
 
             # Install -----------------
             logging.debug(f"Preparing to install file {self.__installer_path}")
@@ -107,6 +107,9 @@ class InstallHandler:
                     trash.send_to_trash(self.mac_app_path)
                     logging.debug("Removed old installation")
 
-                macos.copy_to_applications(temp_dir, self.__installer_path)
+                    macos.copy_to_applications(temp_dir, self.__installer_path)
+            except KeyboardInterrupt as e:
+                logging.error(f"Install took too long to respond. Exiting...", exc_info=e)
+                return
 
         logging.info("Finished installing OpenRCT2\n")
