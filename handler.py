@@ -71,7 +71,7 @@ class InstallHandler:
 
     def update_openrct2(self):
         with tempfile.TemporaryDirectory() as temp_dir:
-            logging.info(f"\nCreated temp dir at {temp_dir}")
+            logging.info(f"Created temp dir at {temp_dir}")
 
             # Download ----------------
             func = github.download_asset

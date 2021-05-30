@@ -15,7 +15,7 @@ def make_windows_installer(version: str):
     :param version: Version of the package formatted like 0.0.0
     :type version: str
     """
-    print("\nStarted building Windows installer")
+    print("Started building Windows installer")
     temp_setup_script = "inno_setup.temp"
 
     tags = [
@@ -35,7 +35,7 @@ def make_windows_installer(version: str):
 
     inno = subprocess.Popen(args, stdout=subprocess.PIPE)
     inno.wait()
-    print(f"\nISCC finished with return code {inno.returncode}")
+    print(f"ISCC finished with return code {inno.returncode}")
 
     os.remove(temp_setup_script)
     print("Removed temp files")
@@ -48,7 +48,7 @@ def make_macos_installer(version: str):
     :param version: Version of the package formatted like 0.0.0
     :type version: str
     """
-    print("\nStarted building macOS installer")
+    print("Started building macOS installer")
 
     info = package_build.PackageInfo(
         name="Corkscrew",

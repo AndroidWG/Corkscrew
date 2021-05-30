@@ -23,9 +23,9 @@ def get_latest_release():
     url = f"https://api.github.com/repos/OpenRCT2/OpenRCT2/releases/latest"
     accept = "application/vnd.github.v3+json"
 
-    logging.info("\nGetting latest release from GitHub...")
+    logging.info("Getting latest release from GitHub...")
     responses = requests.send_request(url, accept)
-    logging.info("Finished getting release info\n")
+    logging.info("Finished getting release info")
     return responses.json()
 
 
@@ -51,7 +51,7 @@ def get_asset_url_and_name(json):
     :return: Tuple containing URL and filename respectively for the current OS
     :rtype: tuple
     """
-    logging.info("\nFinding assets from release...")
+    logging.info("Finding assets from release...")
     assets = json["assets"]
 
     os_specific_binaries = {
@@ -121,7 +121,7 @@ def download_asset(temp_dir: str, url: str, filename: str):
     :type filename: str
     """
 
-    logging.info("\nSending asset download request...")
+    logging.info("Sending asset download request...")
     response = requests.send_request(url, "application/octet-stream")
     response_size = int(response.headers['content-length'])
 
@@ -137,5 +137,5 @@ def download_asset(temp_dir: str, url: str, filename: str):
             bytes_read += chunk_size
             util.print_progress(bytes_read, response_size, suffix="Downloaded")
 
-    logging.info(f"Successfully finished downloading {filename}\n")
+    logging.info(f"Successfully finished downloading {filename}")
     return True
