@@ -2,11 +2,10 @@ import platform
 import sys
 import tempfile
 import os
-import time
-import psutil
 import github
 import logging
 import github.requests
+import util
 from packaging import version
 from install import windows, macos
 
@@ -85,31 +84,28 @@ class InstallHandler:
             # Install -----------------
             logging.debug(f"Preparing to install file {self.__installer_path}")
 
-            counter = 0
-            while "openrct2" in (p.name().lower().removesuffix(".exe") for p in psutil.process_iter()):
-                logging.info("OpenRCT2 is running. Trying again in 20 seconds...")
-                time.sleep(20)
-
-                counter += 1
-                if counter > 30:
-                    logging.warning("OpenRCT2 has been running for a long ass time, so we'll stop trying to update it "
-                                    "for now. Exiting...")
-                    os._exit(1)
-
             if sys.argv.__contains__("--skip-install") or sys.argv.__contains__("-SI"):
-                return 
-            
-            if self.current_platform == "Windows":
-                windows.do_silent_install(temp_dir, self.__installer_path)
-            elif self.current_platform == "Darwin":
-                if os.path.exists(self.mac_app_path):
-                    import trash
-                    trash.send_to_trash(self.mac_app_path)
-                    logging.debug("Removed old installation")
+                return
+
+            try:
+                util.is_open("openrct2", 20)
+            except KeyboardInterrupt:
+                logging.error("OpenRCT2 has been running for a long ass time, so we'll stop trying to update it "
+                              "for now. Exiting...")
+                return
+
+            try:
+                if self.current_platform == "Windows":
+                    windows.do_silent_install(temp_dir, self.__installer_path)
+                elif self.current_platform == "Darwin":
+                    if os.path.exists(self.__mac_app_path):
+                        import trash
+                        trash.send_to_trash(self.__mac_app_path)
+                        logging.debug("Removed old installation")
 
                     macos.copy_to_applications(temp_dir, self.__installer_path)
             except KeyboardInterrupt as e:
                 logging.error(f"Install took too long to respond. Exiting...", exc_info=e)
                 return
 
-        logging.info("Finished installing OpenRCT2\n")
+        logging.info("Finished installing OpenRCT2")

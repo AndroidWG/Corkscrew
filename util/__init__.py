@@ -1,6 +1,10 @@
 import os
 import shutil
 import sys
+import logging
+import time
+import psutil
+import util.timeout
 
 
 # From https://gist.github.com/aubricus/f91fb55dc6ba5557fbab06119420dd6a#file-print_progress-py
@@ -83,3 +87,18 @@ def replace_instances(file: str, tags: list, out_file: str = "temp_", encoding: 
     if out_file == "temp_":
         shutil.move("temp_", file)
         print("Renamed temp_ file")
+
+
+@util.timeout.exit_after(300)  # 5 minutes
+def is_open(process_name: str, sleep: float):
+    """Checks if ``process_name`` is open every ``sleep`` seconds, and quits after 5 minutes of trying with a
+    KeyboardInterrupt exception.
+
+    :param process_name: Lowercase name of the process you want to catch
+    :type process_name: str
+    :param sleep: Amount of seconds to wait before trying again
+    :type sleep: float
+    """
+    while process_name in (p.name().lower().removesuffix(".exe") for p in psutil.process_iter()):
+        logging.info(f"{process_name} is running. Trying again in 20 seconds...")
+        time.sleep(sleep)
