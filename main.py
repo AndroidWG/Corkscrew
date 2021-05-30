@@ -24,7 +24,7 @@ def handle_exception(exc_type, exc_value, exc_traceback):
 
 def main():
     current_platform = platform.system()
-    log_setup.setup_logging("main.log")
+    log_setup.setup_logging("main")
 
     if current_platform == "Linux":
         logging.warning("Linux is currently unsupported. Exiting...")

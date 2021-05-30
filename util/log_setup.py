@@ -1,3 +1,4 @@
+import datetime
 import logging
 import os
 import datetime as dt
@@ -19,11 +20,29 @@ class MillisecondFormatter(logging.Formatter):
         return s
 
 
-def setup_logging(filename):
-    log_path = os.path.join(local_settings.app_data_path, filename)
+def delete_old_logs(name):
+    """Keeps only last 10 logs from logs folder based on the ``name`` argument.
 
-    if not os.path.exists(log_path):
-        os.mkdir(log_path)
+    :param name:  Log name to use
+    :type name: str
+    """
+    logs = []
+    for file in os.listdir(local_settings.logs_path):
+        if file.endswith(".log") and file.__contains__(name):
+            logs.append(file)
+
+    logs.sort(reverse=True)
+    del logs[:9]
+
+    for log in logs:
+        os.remove(os.path.join(local_settings.logs_path, log))
+
+
+def setup_logging(name):
+    filename = name + datetime.datetime.utcnow().strftime("%Y-%m-%d %H-%M-%S") + ".log"
+    log_path = os.path.join(local_settings.logs_path, filename)
+
+    delete_old_logs(name)
 
     logging.basicConfig(
         filename=log_path,

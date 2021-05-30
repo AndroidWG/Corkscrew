@@ -16,11 +16,12 @@ OpenRCT2 has packages for the most popular package managers out there, and since
 [Go to the Releases page](https://github.com/AndroidWG/Corkscrew/releases) and download the latest version for your OS and install it. The installer will create a Task on Windows and a LaunchAgent for macOS that will check for updates every 4 hours.
 
 ### Logs & Settings
-The app keeps the log of the last execution. Settings can also be found of these folders.
+The app keeps the log of the last 10 times it was run. Settings are stored in the same folder in Windows.
 
-| Windows                    | macOS                      |
-|----------------------------|----------------------------|
-| `%LOCALAPPDATA%\Corkscrew` | `~/Library/Logs/Corkscrew` |
+| Type         | Windows                    | macOS                                     |
+|--------------|----------------------------|-------------------------------------------|
+| Logs         | `%LOCALAPPDATA%\Corkscrew` | `~/Library/Logs/Corkscrew`                |
+| Settings     | `%LOCALAPPDATA%\Corkscrew` | `~/Library/Application Support/Corkscrew` |
 
 Please post your log *in full* on a website like [pastebin](https://pastebin.com/) when opening an Issue.
 
