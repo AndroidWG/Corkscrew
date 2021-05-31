@@ -28,7 +28,7 @@ def delete_old_logs(name):
     """
     logs = []
     for file in os.listdir(local_settings.logs_path):
-        if file.endswith(".log") and file.__contains__(name):
+        if os.path.isfile(file) and file.endswith(".log") and file.__contains__(name):
             logs.append(file)
 
     logs.sort(reverse=True)
