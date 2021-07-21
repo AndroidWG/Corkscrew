@@ -20,25 +20,25 @@ class MillisecondFormatter(logging.Formatter):
         return s
 
 
-def delete_old_logs(name):
-    """Keeps only last 10 logs from logs folder based on the ``name`` argument.
+def delete_old_logs(name: str):
+    """Keeps only last x logs, as specified in the settings file, from the logs folder based on the ``name`` argument.
 
     :param name:  Log name to use
     :type name: str
     """
     logs = []
     for file in os.listdir(local_settings.logs_path):
-        if os.path.isfile(file) and file.endswith(".log") and file.__contains__(name):
+        if file.endswith(".log") and file.__contains__(name):
             logs.append(file)
 
     logs.sort(reverse=True)
-    del logs[:9]
+    del logs[:local_settings.max_logs - 1]
 
     for log in logs:
         os.remove(os.path.join(local_settings.logs_path, log))
 
 
-def setup_logging(name):
+def setup_logging(name: str):
     filename = name + datetime.datetime.utcnow().strftime("%Y-%m-%d %H-%M-%S") + ".log"
     log_path = os.path.join(local_settings.logs_path, filename)
 

@@ -15,10 +15,10 @@ If you are on Windows 10 and have winget, just type `winget install androidWG.Co
 - macOS
 
 #### Why no Linux?
-OpenRCT2 has packages for the most popular package managers out there, and since I assume most people will run `sudo apt-get upgrade` (or the equivalent for your distro) semi-frequently, I considered Windows and macOS as the primary platforms I should focus on.
+OpenRCT2 has packages for the most popular package managers out there. Since I assume most people will run `sudo apt-get upgrade` (or the equivalent for your distro) semi-frequently, I considered Windows and macOS as the primary platforms I should focus on.
 
 ### Logs & Settings
-The app keeps the log of the last 10 times it was run. Settings are stored in the same folder in Windows.
+The app keeps the log of the last 25 times it was run (this is configurable in the settings file). Settings are stored in the same folder in Windows.
 
 | Type         | Windows                    | macOS                                     |
 |--------------|----------------------------|-------------------------------------------|
