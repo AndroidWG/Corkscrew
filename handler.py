@@ -1,4 +1,5 @@
 import platform
+import re
 import sys
 import tempfile
 import os
@@ -55,7 +56,8 @@ class InstallHandler:
             install_info = macos.get_app_version(self.__mac_app_path)
 
         try:
-            installed = version.parse(install_info[1])
+            regex_match = re.findall("^(\d+\.)?(\d+\.)?(\*|\d+)", install_info[1])
+            installed = version.parse("".join(regex_match[0]))
         except TypeError:
             # If check_openrct2_install returns null, the "[1]" thing will throw this exception
             # meaning an installation was not found
@@ -64,10 +66,10 @@ class InstallHandler:
         latest = version.parse(github.get_version(self.__latest_release))
         logging.info(f"Latest version is {latest.__str__()} and installed version is {installed.__str__()}")
 
-        if latest >= installed:
-            return True
-        else:
+        if latest > installed:
             return False
+        else:
+            return True
 
     def update_openrct2(self):
         for attempt in range(5):
