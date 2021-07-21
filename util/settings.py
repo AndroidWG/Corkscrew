@@ -41,6 +41,15 @@ class Settings:
             config.write(file)
 
 
+def make_dir(path: str):
+    print(f"Path chosen for app data: {path}")
+    try:
+        os.mkdir(path)
+        print("Created dir")
+    except FileExistsError:
+        pass
+
+
 def setup_app_data_dir() -> str:
     """Gets the folder where to store log files based on OS.
 
@@ -51,17 +60,11 @@ def setup_app_data_dir() -> str:
 
     if current_platform == "Windows":
         path = os.path.join(os.getenv("localappdata"), "Corkscrew")
-        try:
-            os.mkdir(path)
-        except FileExistsError:
-            pass
+        make_dir(path)
         return path
     elif current_platform == "Darwin":
         path = os.path.join(os.path.expanduser("~/Library/Application Support"), "Corkscrew")
-        try:
-            os.mkdir(path)
-        except FileExistsError:
-            pass
+        make_dir(path)
         return path
     else:
         return ""
@@ -77,17 +80,11 @@ def setup_logs_dir() -> str:
 
     if current_platform == "Windows":
         path = os.path.join(os.getenv("localappdata"), "Corkscrew")
-        try:
-            os.mkdir(path)
-        except FileExistsError:
-            pass
+        make_dir(path)
         return path
     elif current_platform == "Darwin":
         path = os.path.join(os.path.expanduser("~/Library/Logs"), "Corkscrew")
-        try:
-            os.mkdir(path)
-        except FileExistsError:
-            pass
+        make_dir(path)
         return path
     else:
         return ""
